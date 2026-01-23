@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,10 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
+        if (now()->greaterThan(Carbon::parse(config('app.oprec_deadline')))) {
+            return Inertia::render('Auth/RegisterClosed');
+        }
+
         return Inertia::render('Auth/Register');
     }
 
@@ -30,6 +35,10 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if (now()->greaterThan(Carbon::parse(config('app.oprec_deadline')))) {
+            abort(403, 'Pendaftaran sudah ditutup.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,

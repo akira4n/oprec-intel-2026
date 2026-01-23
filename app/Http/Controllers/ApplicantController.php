@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Applicant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -33,6 +34,10 @@ class ApplicantController extends Controller
 
     public function store(Request $request)
     {
+        if (now()->greaterThan(Carbon::parse(config('app.oprec_deadline')))) {
+            return redirect()->back()->withErrors(['msg' => 'Maaf waktu pengumpulan tugas sudah selesai.']);
+        }
+
         $user = Auth::user();
 
         // cek sudah daftar atau belom
