@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return view('landing');
+    return view('landing', [
+        'deadline' => config('app.oprec_deadline'),
+    ]);
 })->name('landing');
 
 // Route::get('/dashboard', function () {

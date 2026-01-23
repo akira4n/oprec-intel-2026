@@ -1,8 +1,14 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
+import { useState, useEffect } from "react";
 
 export default function Dashboard({ auth, applicant }) {
+    const { oprec } = usePage().props;
+
     const isSubmitted = !!applicant;
+    const isClosed = !oprec.is_open;
+
+    const isFormClosed = isSubmitted || isClosed;
 
     // List Divisi
     const divisions = [
@@ -29,6 +35,72 @@ export default function Dashboard({ auth, applicant }) {
     const submit = (e) => {
         e.preventDefault();
         post(route("applicant.store"));
+    };
+
+    // --- KOMPONEN COUNTDOWN ---
+    const CountdownTimer = () => {
+        const calculateTimeLeft = () => {
+            const difference = +new Date(oprec.deadline) - +new Date();
+            let timeLeft = {};
+
+            if (difference > 0) {
+                timeLeft = {
+                    Hari: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                    Jam: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                    Menit: Math.floor((difference / 1000 / 60) % 60),
+                    Detik: Math.floor((difference / 1000) % 60),
+                };
+            }
+            return timeLeft;
+        };
+
+        const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+        useEffect(() => {
+            const timer = setInterval(() => {
+                setTimeLeft(calculateTimeLeft());
+            }, 1000);
+            return () => clearInterval(timer);
+        }, []);
+
+        const timerComponents = [];
+
+        Object.keys(timeLeft).forEach((interval) => {
+            if (!timeLeft[interval] && timeLeft[interval] !== 0) {
+                return;
+            }
+
+            timerComponents.push(
+                <div
+                    key={interval}
+                    className="flex flex-col items-center mx-2 bg-blue-100 p-2 rounded-lg min-w-[60px]"
+                >
+                    <span className="font-bold text-xl text-blue-800">
+                        {timeLeft[interval]}
+                    </span>
+                    <span className="text-xs text-blue-600 uppercase">
+                        {interval}
+                    </span>
+                </div>,
+            );
+        });
+
+        return (
+            <div className="flex justify-center items-center py-6">
+                {timerComponents.length ? (
+                    <div className="flex flex-wrap justify-center items-center gap-2">
+                        <span className="font-bold text-gray-600 mr-2">
+                            Sisa Waktu Pendaftaran:
+                        </span>
+                        {timerComponents}
+                    </div>
+                ) : (
+                    <span className="text-red-600 font-bold text-lg">
+                        Waktu Pendaftaran Habis!
+                    </span>
+                )}
+            </div>
+        );
     };
 
     const SubmissionInfo = () => {
@@ -74,6 +146,16 @@ export default function Dashboard({ auth, applicant }) {
         );
     };
 
+    const LateBanner = () => (
+        <div
+            className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 shadow-sm"
+            role="alert"
+        >
+            <p className="font-bold">⏳ Pendaftaran Sudah Ditutup</p>
+            <p>Maaf, kamu terlambat melakukan submit form pendaftaran.</p>
+        </div>
+    );
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -87,8 +169,15 @@ export default function Dashboard({ auth, applicant }) {
 
             <div className="py-12">
                 <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                    {/* TAMPILKAN BANNER JIKA SUDAH SUBMIT */}
-                    {isSubmitted && <SubmissionInfo />}
+                    {/* countdown */}
+                    {!isSubmitted && !isClosed && <CountdownTimer />}
+
+                    {/* tampilin banner jika sudah submit atau terlambat submit */}
+                    {isSubmitted ? (
+                        <SubmissionInfo />
+                    ) : (
+                        isClosed && <LateBanner />
+                    )}
 
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8 border border-gray-100">
                         <div className="mb-8 border-b pb-4">
@@ -137,7 +226,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 e.target.value,
                                             )
                                         }
-                                        disabled={isSubmitted}
+                                        disabled={isFormClosed}
                                         required
                                     >
                                         <option value="">Pilih Divisi</option>
@@ -167,7 +256,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 e.target.value,
                                             )
                                         }
-                                        disabled={isSubmitted}
+                                        disabled={isFormClosed}
                                     >
                                         <option value="">Tidak Memilih</option>
                                         {divisions.map((div) => (
@@ -198,7 +287,7 @@ export default function Dashboard({ auth, applicant }) {
                                     onChange={(e) =>
                                         setData("alasan_utama", e.target.value)
                                     }
-                                    disabled={isSubmitted}
+                                    disabled={isFormClosed}
                                     placeholder="Jelaskan motivasi terbesarmu bergabung dengan organisasi ini..."
                                     required
                                 />
@@ -223,7 +312,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 e.target.value,
                                             )
                                         }
-                                        disabled={isSubmitted}
+                                        disabled={isFormClosed}
                                         required
                                     />
                                     {errors.alasan_satu && (
@@ -246,7 +335,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 e.target.value,
                                             )
                                         }
-                                        disabled={isSubmitted}
+                                        disabled={isFormClosed}
                                         placeholder="Kosongkan jika tidak memilih divisi 2"
                                     />
                                     {errors.alasan_dua && (
@@ -267,8 +356,8 @@ export default function Dashboard({ auth, applicant }) {
                                         File Tugas Divisi 1 (PDF/ZIP)
                                     </label>
 
-                                    {!isSubmitted ? (
-                                        // Mode Input
+                                    {!isFormClosed ? (
+                                        // 1. Mode Input (Masih Buka & Belum Submit)
                                         <div className="mt-1">
                                             <input
                                                 type="file"
@@ -286,8 +375,8 @@ export default function Dashboard({ auth, applicant }) {
                                                 Maksimal 5MB.
                                             </p>
                                         </div>
-                                    ) : (
-                                        // Mode Read Only (Link Download)
+                                    ) : isSubmitted ? (
+                                        // 2. Mode Read Only (Sudah Submit -> Tampilkan Link)
                                         <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
                                             <div className="flex items-center text-sm text-gray-600">
                                                 <svg
@@ -314,6 +403,12 @@ export default function Dashboard({ auth, applicant }) {
                                                 Lihat File
                                             </a>
                                         </div>
+                                    ) : (
+                                        // 3. Mode Telat (Waktu Habis & Belum Submit -> Tampilkan Info)
+                                        <div className="mt-2 text-sm text-red-500 italic border border-red-200 bg-red-50 p-2 rounded">
+                                            Waktu pendaftaran habis. Tidak dapat
+                                            mengupload file.
+                                        </div>
                                     )}
                                     {errors.file_tugas_satu && (
                                         <div className="text-red-500 text-sm mt-1">
@@ -328,7 +423,8 @@ export default function Dashboard({ auth, applicant }) {
                                         File Tugas Divisi 2 (PDF/ZIP)
                                     </label>
 
-                                    {!isSubmitted ? (
+                                    {!isFormClosed ? (
+                                        // 1. Mode Input (Masih Buka & Belum Submit)
                                         <div className="mt-1">
                                             <input
                                                 type="file"
@@ -340,13 +436,14 @@ export default function Dashboard({ auth, applicant }) {
                                                     )
                                                 }
                                                 accept=".pdf,.zip,.rar"
+                                                required
                                             />
                                             <p className="text-xs text-gray-500 mt-1">
-                                                Kosongkan jika tidak memilih
-                                                divisi 2.
+                                                Maksimal 5MB.
                                             </p>
                                         </div>
-                                    ) : applicant.path_tugas_dua ? (
+                                    ) : isSubmitted ? (
+                                        // 2. Mode Read Only (Sudah Submit -> Tampilkan Link)
                                         <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
                                             <div className="flex items-center text-sm text-gray-600">
                                                 <svg
@@ -365,7 +462,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 </span>
                                             </div>
                                             <a
-                                                href={`/storage/${applicant.path_tugas_dua}`}
+                                                href={`/storage/${applicant.path_tugas_satu}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="text-sm font-semibold text-indigo-600 hover:underline"
@@ -374,8 +471,10 @@ export default function Dashboard({ auth, applicant }) {
                                             </a>
                                         </div>
                                     ) : (
-                                        <div className="mt-6 text-sm text-gray-400 italic text-center">
-                                            - Tidak ada file tugas 2 -
+                                        // 3. Mode Telat (Waktu Habis & Belum Submit -> Tampilkan Info)
+                                        <div className="mt-2 text-sm text-red-500 italic border border-red-200 bg-red-50 p-2 rounded">
+                                            Waktu pendaftaran habis. Tidak dapat
+                                            mengupload file.
                                         </div>
                                     )}
                                     {errors.file_tugas_dua && (
@@ -387,7 +486,7 @@ export default function Dashboard({ auth, applicant }) {
                             </div>
 
                             {/* --- SUBMIT BUTTON --- */}
-                            {!isSubmitted && (
+                            {!isFormClosed && (
                                 <div className="flex justify-end pt-6">
                                     <button
                                         type="submit"

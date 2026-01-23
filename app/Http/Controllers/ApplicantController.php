@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Applicant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -33,6 +34,10 @@ class ApplicantController extends Controller
 
     public function store(Request $request)
     {
+        if (now()->greaterThan(Carbon::parse(config('app.oprec_deadline')))) {
+            return redirect()->back()->withErrors(['msg' => 'Maaf waktu pengumpulan tugas sudah selesai.']);
+        }
+
         $user = Auth::user();
 
         // cek sudah daftar atau belom
@@ -46,8 +51,8 @@ class ApplicantController extends Controller
             'alasan_utama' => 'required|string|min:3|max:10000',
             'alasan_satu' => 'required|string|min:3|max:10000',
             'alasan_dua' => 'nullable|string|max:10000',
-            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:10240',
-            'file_tugas_dua' => 'nullable|file|mimes:pdf,zip,rar|max:10240',
+            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:5120',
+            'file_tugas_dua' => 'nullable|file|mimes:pdf,zip,rar|max:5120',
         ]);
 
         $pathSatu = $request->file('file_tugas_satu')->store('tugas_oprec', 'public');
