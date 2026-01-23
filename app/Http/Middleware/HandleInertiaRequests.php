@@ -34,6 +34,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+
+            // deadline oprec
+            'oprec' => [
+                'is_open' => now()->lessThan(\Carbon\Carbon::parse(config('app.oprec_deadline'))),
+                'deadline' => config('app.oprec_deadline'),
+            ],
         ];
     }
 }
