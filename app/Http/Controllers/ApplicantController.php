@@ -51,8 +51,8 @@ class ApplicantController extends Controller
             'alasan_utama' => 'required|string|min:3|max:10000',
             'alasan_satu' => 'required|string|min:3|max:10000',
             'alasan_dua' => 'nullable|string|max:10000',
-            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:10240',
-            'file_tugas_dua' => 'nullable|file|mimes:pdf,zip,rar|max:10240',
+            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:5120',
+            'file_tugas_dua' => 'nullable|file|mimes:pdf,zip,rar|max:5120',
         ]);
 
         $pathSatu = $request->file('file_tugas_satu')->store('tugas_oprec', 'public');
