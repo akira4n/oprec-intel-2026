@@ -1,5 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, usePage } from "@inertiajs/react";
+import { useState, useEffect } from "react";
 
 export default function Dashboard({ auth, applicant }) {
     const { oprec } = usePage().props;
@@ -34,6 +35,72 @@ export default function Dashboard({ auth, applicant }) {
     const submit = (e) => {
         e.preventDefault();
         post(route("applicant.store"));
+    };
+
+    // --- KOMPONEN COUNTDOWN ---
+    const CountdownTimer = () => {
+        const calculateTimeLeft = () => {
+            const difference = +new Date(oprec.deadline) - +new Date();
+            let timeLeft = {};
+
+            if (difference > 0) {
+                timeLeft = {
+                    Hari: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                    Jam: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                    Menit: Math.floor((difference / 1000 / 60) % 60),
+                    Detik: Math.floor((difference / 1000) % 60),
+                };
+            }
+            return timeLeft;
+        };
+
+        const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+        useEffect(() => {
+            const timer = setInterval(() => {
+                setTimeLeft(calculateTimeLeft());
+            }, 1000);
+            return () => clearInterval(timer);
+        }, []);
+
+        const timerComponents = [];
+
+        Object.keys(timeLeft).forEach((interval) => {
+            if (!timeLeft[interval] && timeLeft[interval] !== 0) {
+                return;
+            }
+
+            timerComponents.push(
+                <div
+                    key={interval}
+                    className="flex flex-col items-center mx-2 bg-blue-100 p-2 rounded-lg min-w-[60px]"
+                >
+                    <span className="font-bold text-xl text-blue-800">
+                        {timeLeft[interval]}
+                    </span>
+                    <span className="text-xs text-blue-600 uppercase">
+                        {interval}
+                    </span>
+                </div>,
+            );
+        });
+
+        return (
+            <div className="flex justify-center items-center py-6">
+                {timerComponents.length ? (
+                    <div className="flex flex-wrap justify-center items-center gap-2">
+                        <span className="font-bold text-gray-600 mr-2">
+                            Sisa Waktu Pendaftaran:
+                        </span>
+                        {timerComponents}
+                    </div>
+                ) : (
+                    <span className="text-red-600 font-bold text-lg">
+                        Waktu Pendaftaran Habis!
+                    </span>
+                )}
+            </div>
+        );
     };
 
     const SubmissionInfo = () => {
@@ -102,6 +169,9 @@ export default function Dashboard({ auth, applicant }) {
 
             <div className="py-12">
                 <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                    {/* countdown */}
+                    {!isSubmitted && !isClosed && <CountdownTimer />}
+
                     {/* tampilin banner jika sudah submit atau terlambat submit */}
                     {isSubmitted ? (
                         <SubmissionInfo />
@@ -302,7 +372,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 required
                                             />
                                             <p className="text-xs text-gray-500 mt-1">
-                                                Maksimal 10MB.
+                                                Maksimal 5MB.
                                             </p>
                                         </div>
                                     ) : isSubmitted ? (
@@ -348,7 +418,6 @@ export default function Dashboard({ auth, applicant }) {
                                 </div>
 
                                 {/* TUGAS DIVISI 2 */}
-                                {/* TUGAS DIVISI 1 */}
                                 <div>
                                     <label className="block font-semibold text-sm text-gray-700 mb-2">
                                         File Tugas Divisi 2 (PDF/ZIP)
@@ -370,7 +439,7 @@ export default function Dashboard({ auth, applicant }) {
                                                 required
                                             />
                                             <p className="text-xs text-gray-500 mt-1">
-                                                Maksimal 10 MB.
+                                                Maksimal 5MB.
                                             </p>
                                         </div>
                                     ) : isSubmitted ? (
