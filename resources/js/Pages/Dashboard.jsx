@@ -207,6 +207,12 @@ export default function Dashboard({ auth, applicant }) {
                                     </span>{" "}
                                     {auth.user.email}
                                 </div>
+                                <div>
+                                    <span className="font-bold block">
+                                        No. HP:
+                                    </span>{" "}
+                                    {auth.user.no_hp}
+                                </div>
                             </div>
                         </div>
 

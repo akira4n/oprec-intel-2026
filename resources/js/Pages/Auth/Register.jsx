@@ -10,6 +10,7 @@ export default function Register() {
         name: "",
         email: "",
         nim: "",
+        no_hp: "",
         password: "",
         password_confirmation: "",
     });
@@ -75,6 +76,21 @@ export default function Register() {
                     />
 
                     <InputError message={errors.email} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="no_hp" value="No. HP" />
+
+                    <TextInput
+                        id="no_hp"
+                        name="no_hp"
+                        value={data.no_hp}
+                        className="mt-1 block w-full"
+                        onChange={(e) => setData("no_hp", e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.no_hp} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
