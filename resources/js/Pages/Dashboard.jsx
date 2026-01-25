@@ -22,7 +22,21 @@ export default function Dashboard({ auth, applicant }) {
         "toastmaster",
     ];
 
+    const batches = ["2024", "2025"];
+
+    // list jurusan
+    const majors = [
+        { id: "si", name: "Information Systems" },
+        { id: "sk", name: "Computer Systems" },
+        { id: "ti", name: "Informatics Engineering" },
+        { id: "ka", name: "Computerized Accounting" },
+        { id: "mi", name: "Information Management" },
+        { id: "tk", name: "Computer Engineering" },
+    ];
+
     const { data, setData, post, processing, errors } = useForm({
+        major: applicant?.major || "",
+        batch: applicant?.batch || "",
         divisi_satu: applicant?.divisi_satu || "",
         divisi_dua: applicant?.divisi_dua || "",
         alasan_utama: applicant?.alasan_utama || "",
@@ -30,6 +44,10 @@ export default function Dashboard({ auth, applicant }) {
         alasan_dua: applicant?.alasan_dua || "",
         file_tugas_satu: null,
         file_tugas_dua: null,
+        file_tiktok: null,
+        file_instagram: null,
+        file_pamflet: null,
+        file_twibbon: null,
     });
 
     const submit = (e) => {
@@ -217,6 +235,65 @@ export default function Dashboard({ auth, applicant }) {
                         </div>
 
                         <form onSubmit={submit} className="space-y-8">
+                            {/* --- SECTION 0: DATA AKADEMIK (NEW) --- */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
+                                        Jurusan (Major)
+                                    </label>
+                                    <select
+                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                                        value={data.major}
+                                        onChange={(e) =>
+                                            setData("major", e.target.value)
+                                        }
+                                        disabled={isFormClosed}
+                                        required
+                                    >
+                                        <option value="">Pilih Jurusan</option>
+                                        {majors.map((m) => (
+                                            <option key={m.id} value={m.id}>
+                                                {m.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.major && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {errors.major}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
+                                        Angkatan (Batch)
+                                    </label>
+                                    <select
+                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
+                                        value={data.batch}
+                                        onChange={(e) =>
+                                            setData("batch", e.target.value)
+                                        }
+                                        disabled={isFormClosed}
+                                        required
+                                    >
+                                        <option value="">Pilih Angkatan</option>
+                                        {batches.map((b) => (
+                                            <option key={b} value={b}>
+                                                {b}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.batch && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {errors.batch}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-100"></div>
+
                             {/* --- SECTION 1: PILIHAN DIVISI --- */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
@@ -442,42 +519,50 @@ export default function Dashboard({ auth, applicant }) {
                                                     )
                                                 }
                                                 accept=".pdf,.zip,.rar"
-                                                required
                                             />
                                             <p className="text-xs text-gray-500 mt-1">
                                                 Maksimal 5MB.
                                             </p>
                                         </div>
                                     ) : isSubmitted ? (
-                                        // 2. Mode Read Only (Sudah Submit -> Tampilkan Link)
-                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                            <div className="flex items-center text-sm text-gray-600">
-                                                <svg
-                                                    className="w-5 h-5 mr-2 text-red-500"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
+                                        // 2. Mode Read Only (Sudah Submit)
+                                        // PERBAIKAN: Cek dulu apakah path_tugas_dua ada isinya?
+                                        applicant.path_tugas_dua ? (
+                                            <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
+                                                <div className="flex items-center text-sm text-gray-600">
+                                                    <svg
+                                                        className="w-5 h-5 mr-2 text-red-500"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 20 20"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                    <span>
+                                                        File Tugas 2 Terkirim
+                                                    </span>
+                                                </div>
+                                                <a
+                                                    // PERBAIKAN: Ganti path_tugas_satu jadi path_tugas_dua
+                                                    href={`/storage/${applicant.path_tugas_dua}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-sm font-semibold text-indigo-600 hover:underline"
                                                 >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                                <span>
-                                                    File Tugas 2 Terkirim
-                                                </span>
+                                                    Lihat File
+                                                </a>
                                             </div>
-                                            <a
-                                                href={`/storage/${applicant.path_tugas_satu}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm font-semibold text-indigo-600 hover:underline"
-                                            >
-                                                Lihat File
-                                            </a>
-                                        </div>
+                                        ) : (
+                                            // Jika path_tugas_dua kosong (null)
+                                            <div className="mt-6 text-sm text-gray-400 italic text-center">
+                                                - Tidak ada file tugas 2 -
+                                            </div>
+                                        )
                                     ) : (
-                                        // 3. Mode Telat (Waktu Habis & Belum Submit -> Tampilkan Info)
+                                        // 3. Mode Telat (Waktu Habis & Belum Submit)
                                         <div className="mt-2 text-sm text-red-500 italic border border-red-200 bg-red-50 p-2 rounded">
                                             Waktu pendaftaran habis. Tidak dapat
                                             mengupload file.
@@ -486,6 +571,207 @@ export default function Dashboard({ auth, applicant }) {
                                     {errors.file_tugas_dua && (
                                         <div className="text-red-500 text-sm mt-1">
                                             {errors.file_tugas_dua}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-100"></div>
+
+                            {/* --- SECTION 4: BUKTI UPLOAD (NEW) --- */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {/* 1. Tiktok */}
+                                <div>
+                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
+                                        Screenshot Follow Tiktok (Image)
+                                    </label>
+                                    {!isFormClosed ? (
+                                        <div className="mt-1">
+                                            <input
+                                                type="file"
+                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "file_tiktok",
+                                                        e.target.files[0],
+                                                    )
+                                                }
+                                                accept="image/*"
+                                                required
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Max 2MB.
+                                            </p>
+                                        </div>
+                                    ) : isSubmitted ? (
+                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
+                                            <span className="text-sm text-gray-600">
+                                                Bukti Tiktok Terkirim
+                                            </span>
+                                            <a
+                                                href={`/storage/${applicant.path_tiktok}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-sm font-semibold text-indigo-600 hover:underline"
+                                            >
+                                                Lihat Gambar
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2 text-sm text-red-500 italic">
+                                            Waktu habis.
+                                        </div>
+                                    )}
+                                    {errors.file_tiktok && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {errors.file_tiktok}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 2. Instagram */}
+                                <div>
+                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
+                                        Screenshot Follow Instagram (Image)
+                                    </label>
+                                    {!isFormClosed ? (
+                                        <div className="mt-1">
+                                            <input
+                                                type="file"
+                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "file_instagram",
+                                                        e.target.files[0],
+                                                    )
+                                                }
+                                                accept="image/*"
+                                                required
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Max 2MB.
+                                            </p>
+                                        </div>
+                                    ) : isSubmitted ? (
+                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
+                                            <span className="text-sm text-gray-600">
+                                                Bukti IG Terkirim
+                                            </span>
+                                            <a
+                                                href={`/storage/${applicant.path_instagram}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-sm font-semibold text-indigo-600 hover:underline"
+                                            >
+                                                Lihat Gambar
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2 text-sm text-red-500 italic">
+                                            Waktu habis.
+                                        </div>
+                                    )}
+                                    {errors.file_instagram && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {errors.file_instagram}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 3. Pamflet */}
+                                <div>
+                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
+                                        Screenshot Share Pamflet (Image)
+                                    </label>
+                                    {!isFormClosed ? (
+                                        <div className="mt-1">
+                                            <input
+                                                type="file"
+                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "file_pamflet",
+                                                        e.target.files[0],
+                                                    )
+                                                }
+                                                accept="image/*"
+                                                required
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Max 2MB.
+                                            </p>
+                                        </div>
+                                    ) : isSubmitted ? (
+                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
+                                            <span className="text-sm text-gray-600">
+                                                Bukti Pamflet Terkirim
+                                            </span>
+                                            <a
+                                                href={`/storage/${applicant.path_pamflet}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-sm font-semibold text-indigo-600 hover:underline"
+                                            >
+                                                Lihat Gambar
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2 text-sm text-red-500 italic">
+                                            Waktu habis.
+                                        </div>
+                                    )}
+                                    {errors.file_pamflet && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {errors.file_pamflet}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 4. Twibbon */}
+                                <div>
+                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
+                                        Screenshot Share Twibbon (Image)
+                                    </label>
+                                    {!isFormClosed ? (
+                                        <div className="mt-1">
+                                            <input
+                                                type="file"
+                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
+                                                onChange={(e) =>
+                                                    setData(
+                                                        "file_twibbon",
+                                                        e.target.files[0],
+                                                    )
+                                                }
+                                                accept="image/*"
+                                                required
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Max 2MB.
+                                            </p>
+                                        </div>
+                                    ) : isSubmitted ? (
+                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
+                                            <span className="text-sm text-gray-600">
+                                                Bukti Twibbon Terkirim
+                                            </span>
+                                            <a
+                                                href={`/storage/${applicant.path_twibbon}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-sm font-semibold text-indigo-600 hover:underline"
+                                            >
+                                                Lihat Gambar
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-2 text-sm text-red-500 italic">
+                                            Waktu habis.
+                                        </div>
+                                    )}
+                                    {errors.file_twibbon && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {errors.file_twibbon}
                                         </div>
                                     )}
                                 </div>
