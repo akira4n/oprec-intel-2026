@@ -12,6 +12,8 @@ class Applicant extends Model
 
     protected $fillable = [
         'user_id',
+        'major',
+        'batch',
         'divisi_satu',
         'divisi_dua',
         'alasan_utama',
@@ -19,6 +21,10 @@ class Applicant extends Model
         'alasan_dua',
         'path_tugas_satu',
         'path_tugas_dua',
+        'path_tiktok',
+        'path_instagram',
+        'path_pamflet',
+        'path_twibbon',
         'status',
         'accepted_division',
     ];

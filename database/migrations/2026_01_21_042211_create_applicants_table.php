@@ -14,13 +14,22 @@ return new class extends Migration
         Schema::create('applicants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->enum('major', ['si', 'sk', 'ti', 'ka', 'mi', 'tk']);
+            $table->enum('batch', ['2024', '2025']);
             $table->enum('divisi_satu', ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster']);
             $table->enum('divisi_dua', ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster'])->nullable();
             $table->text('alasan_utama');
             $table->text('alasan_satu');
             $table->text('alasan_dua')->nullable();
+
             $table->string('path_tugas_satu');
             $table->string('path_tugas_dua')->nullable();
+
+            $table->string('path_tiktok');
+            $table->string('path_instagram');
+            $table->string('path_pamflet');
+            $table->string('path_twibbon');
+
             $table->enum('status', ['pending', 'terima', 'ditolak'])->default('pending');
             $table->enum('accepted_division', ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster'])->nullable();
             $table->timestamps();
