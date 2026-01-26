@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
 
 Route::controller(PengumumanController::class)->group(function () {
     Route::get('/pengumuman', 'index')->name('pengumuman.index');
-    Route::post('/pengumuman/check', 'show')->name('pengumuman.check');
+    Route::post('/pengumuman', 'show')->name('pengumuman.check');
 });
 
 require __DIR__ . '/auth.php';
