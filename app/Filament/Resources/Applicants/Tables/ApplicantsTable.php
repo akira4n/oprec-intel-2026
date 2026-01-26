@@ -54,6 +54,21 @@ class ApplicantsTable
                         'ditolak' => 'danger',
                         default => 'gray',
                     }),
+
+                TextColumn::make('accepted_division')
+                    ->label('Lulus Di')
+                    ->badge()
+                    ->color('success')
+                    ->formatStateUsing(fn (string $state) => strtoupper($state))
+                    ->placeholder('-'), // Kalau belum diterima, strip
+
+                // 2. Tampilkan Skor Utama
+                TextColumn::make('score_1')
+                    ->label('Skor Interview')
+                    ->numeric()
+                    ->sortable()
+                    ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger'))
+                    ->placeholder('Belum Dinilai'),
             ])
             ->defaultSort('created_at', 'desc') // Urutkan dari yang terbaru
             ->filters([

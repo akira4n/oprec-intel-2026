@@ -10,26 +10,28 @@ class Applicant extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-
-    // protected $fillable = [
-    //     'user_id',
-    //     'major',
-    //     'batch',
-    //     'divisi_satu',
-    //     'divisi_dua',
-    //     'alasan_utama',
-    //     'alasan_satu',
-    //     'alasan_dua',
-    //     'path_tugas_satu',
-    //     'path_tugas_dua',
-    //     'path_tiktok',
-    //     'path_instagram',
-    //     'path_pamflet',
-    //     'path_twibbon',
-    //     'status',
-    //     'accepted_division',
-    // ];
+    protected $fillable = [
+        'user_id',
+        'major',
+        'batch',
+        'divisi_satu',
+        'divisi_dua',
+        'alasan_utama',
+        'alasan_satu',
+        'alasan_dua',
+        'path_tugas_satu',
+        'path_tugas_dua',
+        'path_tiktok',
+        'path_instagram',
+        'path_pamflet',
+        'path_twibbon',
+        'status',
+        'accepted_division', // <--- Pastikan ada
+        'score_1',           // <--- Pastikan ada
+        'notes_1',           // <--- Pastikan ada
+        'score_2',           // <--- Pastikan ada
+        'notes_2',
+    ];
 
     public function user(): BelongsTo
     {
