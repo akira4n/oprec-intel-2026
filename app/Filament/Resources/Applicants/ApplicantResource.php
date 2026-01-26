@@ -49,24 +49,24 @@ class ApplicantResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
-        $user = auth()->user(); // Ambil user yang sedang login
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $query = parent::getEloquentQuery();
+    //     $user = auth()->user(); // Ambil user yang sedang login
 
-        // 1. Jika Super Admin, tampilkan semua (langsung return query asli)
-        if ($user->role === 'super_admin') {
-            return $query;
-        }
+    //     // 1. Jika Super Admin, tampilkan semua (langsung return query asli)
+    //     if ($user->role === 'super_admin') {
+    //         return $query;
+    //     }
 
-        // 2. Jika Divisi Admin, filter berdasarkan divisinya
-        if ($user->role === 'divisi_admin' && ! empty($user->division)) {
-            return $query->where(function (Builder $q) use ($user) {
-                // Tampilkan jika Pilihan 1 ADALAH divisi admin
-                $q->where('divisi_satu', $user->division)
-                  // ATAU Pilihan 2 ADALAH divisi admin
-                    ->orWhere('divisi_dua', $user->division);
-            });
-        }
-    }
+    //     // 2. Jika Divisi Admin, filter berdasarkan divisinya
+    //     if ($user->role === 'divisi_admin' && ! empty($user->division)) {
+    //         return $query->where(function (Builder $q) use ($user) {
+    //             // Tampilkan jika Pilihan 1 ADALAH divisi admin
+    //             $q->where('divisi_satu', $user->division)
+    //               // ATAU Pilihan 2 ADALAH divisi admin
+    //                 ->orWhere('divisi_dua', $user->division);
+    //         });
+    //     }
+    // }
 }
