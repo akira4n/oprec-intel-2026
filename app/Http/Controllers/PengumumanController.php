@@ -12,7 +12,7 @@ class PengumumanController extends Controller
 {
     private function getAnnouncementDate()
     {
-        return Carbon::create(2026, 2, 20, 0, 1, 0, 'Asia/Jakarta');
+        return Carbon::create(2026, 2, 20, 0, 0, 0, 'Asia/Jakarta');
     }
 
     public function index()
@@ -51,7 +51,7 @@ class PengumumanController extends Controller
                     'name' => $user->name,
                     'nim' => $user->nim,
                     'status' => $applicant->status,
-                    'accepted_division' => $applicant->status === 'diterima' ? $applicant->accepted_division : null,
+                    'accepted_division' => $applicant->status === 'terima' ? $applicant->accepted_division : null,
                 ];
             }
         }
