@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@intel.com',
             'nim' => '0000000000',
             'role' => 'super_admin',
+            'no_hp' => '080000000000',
             'password' => $password,
         ]);
 
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
                 'email' => $div.'@intel.com',
                 'nim' => '111111111'.($index + 1), // NIM unik
                 'role' => 'divisi_admin',
+                'no_hp' => '0812345678'.$index,
                 'division' => $div,
                 'password' => $password,
             ]);

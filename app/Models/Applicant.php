@@ -26,7 +26,11 @@ class Applicant extends Model
         'path_pamflet',
         'path_twibbon',
         'status',
-        'accepted_division',
+        'accepted_division', // <--- Pastikan ada
+        'score_1',           // <--- Pastikan ada
+        'notes_1',           // <--- Pastikan ada
+        'score_2',           // <--- Pastikan ada
+        'notes_2',
     ];
 
     public function user(): BelongsTo
