@@ -70,7 +70,7 @@ class ApplicantController extends Controller
 
         if ($request->divisi_satu === $request->divisi_dua) {
             return back()->withErrors([
-                'divisi_dua' => 'Pilihan divisi tidak boleh sama'
+                'divisi_dua' => 'Division choices must be different.'
             ]);
         }
 

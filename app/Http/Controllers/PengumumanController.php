@@ -40,12 +40,12 @@ class PengumumanController extends Controller
         $error = null;
 
         if (!$user) {
-            $error = 'NIM tidak ditemukan. Pastikan kamu sudah terdaftar.';
+            $error = "NIM not found. Please make sure you are already registered.";
         } else {
             $applicant = Applicant::where('user_id', $user->id)->first();
 
             if (!$applicant) {
-                $error = 'Akun ditemukan, tapi data pendaftaran tidak ada.';
+                $error = 'NIM found, but no registration data is available.';
             } else {
                 $result = [
                     'name' => $user->name,

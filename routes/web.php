@@ -29,8 +29,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::controller(PengumumanController::class)->group(function () {
-    Route::get('/pengumuman', 'index')->name('pengumuman.index');
-    Route::post('/pengumuman', 'show')->name('pengumuman.check');
+    Route::get('/announcement', 'index')->name('pengumuman.index');
+    Route::post('/announcement', 'show')->name('pengumuman.check');
 });
 
 require __DIR__ . '/auth.php';
