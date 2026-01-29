@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Recruitment INTEL 2026</title>
+    <title>Open Recruitment INTEL FASILKOM UNSRI 2026</title>
     @vite(['resources/js/app.jsx'])
 </head>
 
