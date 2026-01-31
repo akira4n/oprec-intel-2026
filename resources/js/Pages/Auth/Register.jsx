@@ -61,13 +61,13 @@ export default function Register() {
             <div className="absolute bottom-[-10%] left-[-10%] w-64 h-64 md:w-96 md:h-96 bg-green-300/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 pointer-events-none"></div>
             <div className="absolute top-[-10%] right-[-10%] w-64 h-64 md:w-96 md:h-96 bg-rose-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 pointer-events-none"></div>
 
-            <div className="relative z-10 w-full max-w-2xl bg-white/90 backdrop-blur-sm rounded-[2.5rem] shadow-2xl p-8 sm:p-12 border border-white/50">
+            <div className="relative z-10 w-full max-w-2xl bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 sm:p-12 border border-white/50">
                 
                 <div className="flex justify-center mb-6">
                     <img
                         src="/assets/images/logo.png" 
                         alt="INTEL Logo"
-                        className="h-16 w-auto object-contain drop-shadow-sm"
+                        className="h-16 w-auto object-contain drop-shadow-sm rounded-md"
                         onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/150x80?text=INTEL+Logo';
@@ -124,7 +124,7 @@ export default function Register() {
                                 value={data.email}
                                 className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 focus:border-[#d06b72] focus:ring-[#d06b72] px-4 py-3"
                                 onChange={(e) => setData("email", e.target.value)}
-                                placeholder="name@student.unsri.ac.id"
+                                placeholder="your@email.com"
                                 required
                             />
                             <InputError message={errors.email} className="mt-2" />

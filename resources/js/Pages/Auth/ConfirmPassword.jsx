@@ -36,14 +36,14 @@ export default function ConfirmPassword() {
             <div className="absolute top-[-10%] right-[-10%] w-64 h-64 md:w-96 md:h-96 bg-rose-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 pointer-events-none"></div>
 
             {/* Kartu Form Utama */}
-            <div className="relative z-10 w-full max-w-md bg-white rounded-[2rem] shadow-xl p-8 sm:p-10">
+            <div className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-xl p-8 sm:p-10">
                 {/* Logo Section */}
                 <div className="flex justify-center mb-8">
                     {/* GANTI src ini dengan path logo Anda yang sebenarnya */}
                     <img
-                        src="/images/intel-logo.png"
+                        src="assets/images/logo.png"
                         alt="INTEL Logo"
-                        className="h-20 w-auto object-contain"
+                        className="h-20 w-auto object-contain rounded-md"
                         // Placeholder jika gambar belum ada, agar tidak rusak tampilannya
                         onError={(e) => {
                             e.target.onerror = null;
