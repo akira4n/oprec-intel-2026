@@ -3,13 +3,26 @@ import { Head, useForm, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
 export default function Dashboard({ auth, applicant }) {
-    const { oprec } = usePage().props;
+    const { oprec, task } = usePage().props;
 
+    // --- LOGIC STATUS ---
     const isSubmitted = !!applicant;
-    const isClosed = !oprec.is_open;
-    const isFormClosed = isSubmitted || isClosed;
+    const isRegClosed = !oprec.is_open;
 
-    // mapping divisi
+    // Form Registrasi jadi Read-Only jika: Sudah Submit ATAU Pendaftaran Tutup
+    const isFormClosed = isSubmitted || isRegClosed;
+
+    // Cek Status Tugas
+    const isTaskSubmitted = applicant?.path_tugas_satu != null;
+    const isTaskClosed = !task.is_open;
+
+    // Form Tugas jadi Read-Only jika Sudah Submit Tugas ATAU Deadline Tugas Lewat
+    const isTaskFormClosed = isTaskSubmitted || isTaskClosed;
+
+    // Tampilkan Section Tugas
+    const showTaskSection = isSubmitted;
+
+    // --- DATA LIST ---
     const divisionOptions = [
         { id: "hrd", label: "HRD" },
         { id: "arrait", label: "ARRAIT" },
@@ -33,6 +46,7 @@ export default function Dashboard({ auth, applicant }) {
         { id: "tk", name: "Computer Engineering" },
     ];
 
+    // --- FORM 1: REGISTRASI DATA DIRI ---
     const { data, setData, post, processing, errors } = useForm({
         major: applicant?.major || "",
         batch: applicant?.batch || "",
@@ -41,23 +55,38 @@ export default function Dashboard({ auth, applicant }) {
         alasan_utama: applicant?.alasan_utama || "",
         alasan_satu: applicant?.alasan_satu || "",
         alasan_dua: applicant?.alasan_dua || "",
-        file_tugas_satu: null,
-        file_tugas_dua: null,
         file_tiktok: null,
         file_instagram: null,
         file_pamflet: null,
         file_twibbon: null,
     });
 
-    const submit = (e) => {
+    const submitRegistration = (e) => {
         e.preventDefault();
         post(route("applicant.store"));
     };
 
-    // countdown
-    const CountdownTimer = () => {
+    // --- FORM 2: UPLOAD TUGAS (ASSIGNMENT) ---
+    const {
+        data: taskData,
+        setData: setTaskData,
+        post: postTask,
+        processing: processingTask,
+        errors: taskErrors,
+    } = useForm({
+        file_tugas_satu: null,
+        file_tugas_dua: null,
+    });
+
+    const submitTask = (e) => {
+        e.preventDefault();
+        postTask(route("applicant.store_tasks"));
+    };
+
+    // --- COMPONENT: COUNTDOWN ---
+    const CountdownTimer = ({ deadline, label = "Time Remaining" }) => {
         const calculateTimeLeft = () => {
-            const difference = +new Date(oprec.deadline) - +new Date();
+            const difference = +new Date(deadline) - +new Date();
             let timeLeft = {};
 
             if (difference > 0) {
@@ -78,7 +107,7 @@ export default function Dashboard({ auth, applicant }) {
                 setTimeLeft(calculateTimeLeft());
             }, 1000);
             return () => clearInterval(timer);
-        }, []);
+        }, [deadline]);
 
         const timerComponents = [];
         Object.keys(timeLeft).forEach((interval) => {
@@ -100,20 +129,19 @@ export default function Dashboard({ auth, applicant }) {
             <div className="flex justify-center py-2 mb-4">
                 {timerComponents.length ? (
                     <div className="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100 flex items-center gap-1 text-xs">
-                        <span className="text-gray-400 mr-1">
-                            Time Remaining:
-                        </span>
+                        <span className="text-gray-400 mr-1">{label}:</span>
                         {timerComponents}
                     </div>
                 ) : (
                     <span className="text-red-500 font-bold text-xs bg-red-50 px-3 py-1 rounded-full">
-                        Registration Closed
+                        Time is Up!
                     </span>
                 )}
             </div>
         );
     };
 
+    // --- NOTIFICATIONS ---
     const SubmissionInfo = () => (
         <div className="bg-green-50/50 border border-green-200 text-green-800 p-6 mb-8 rounded-xl shadow-sm flex items-start gap-4">
             <div className="bg-green-100 p-2 rounded-full text-green-600">
@@ -132,11 +160,15 @@ export default function Dashboard({ auth, applicant }) {
                 </svg>
             </div>
             <div>
-                <h3 className="font-bold text-lg">Registration Received!</h3>
+                <h3 className="font-bold text-lg">
+                    Registration Data Received!
+                </h3>
                 <p className="mt-1 text-sm text-green-700 leading-relaxed mb-2">
-                    Thank you, <strong>{auth.user.name}</strong>. Your
-                    registration data has been saved. Dont forget to join
-                    WhatsApp Group below for future information!
+                    Thank you, <strong>{auth.user.name}</strong>. Your personal
+                    data has been saved
+                    {!isTaskSubmitted
+                        ? ". Please continue to upload your tasks below."
+                        : " and your submission has been sent. Good luck!"}
                 </p>
                 <a
                     href="https://chat.whatsapp.com/C5rERVrt3joJkKug6HIupR"
@@ -158,7 +190,7 @@ export default function Dashboard({ auth, applicant }) {
         </div>
     );
 
-    // --- STYLE HELPERS (PRIMARY COLOR #D4DB95) ---
+    // --- STYLES ---
     const inputClass =
         "w-full border-gray-200 bg-gray-50/50 rounded-lg px-4 py-3 text-sm focus:bg-white focus:border-[#D4DB95] focus:ring-[#D4DB95] transition-all disabled:opacity-60 disabled:cursor-not-allowed";
     const labelClass =
@@ -172,29 +204,218 @@ export default function Dashboard({ auth, applicant }) {
 
             <div className="pb-20 pt-8">
                 <div className="max-w-5xl mx-auto sm:px-6 lg:px-8">
-                    {!isSubmitted && !isClosed && <CountdownTimer />}
+                    {/* 1. Countdown Global (Muncul jika belum daftar & Oprec masih buka) */}
+                    {!isSubmitted && !isRegClosed && (
+                        <CountdownTimer
+                            deadline={oprec.deadline}
+                            label="Registration Deadline"
+                        />
+                    )}
 
-                    {/* Status Banners */}
+                    {/* 2. Status Banners */}
                     {isSubmitted ? (
                         <SubmissionInfo />
                     ) : (
-                        isClosed && <LateBanner />
+                        isRegClosed && <LateBanner />
                     )}
 
-                    <div className="bg-white shadow-xl shadow-gray-200/50 rounded-lg sm:rounded-2xl overflow-hidden">
+                    {/* 3. FORM ASSIGNMENT (Muncul Jika Sudah Regis) */}
+                    {showTaskSection && (
+                        <>
+                            {!isTaskSubmitted && !isTaskClosed && (
+                                <CountdownTimer
+                                    deadline={task.deadline}
+                                    label="Task Deadline"
+                                />
+                            )}
+
+                            <div
+                                className={`bg-white shadow-xl shadow-gray-200/50 rounded-lg sm:rounded-2xl overflow-hidden mb-10 border-2 border-[#D4DB95]/20`}
+                            >
+                                <div className="px-8 pt-8 pb-4 border-b border-gray-100">
+                                    <h2 className="text-2xl font-black text-gray-800 tracking-tight">
+                                        {isTaskSubmitted
+                                            ? "Task Submitted"
+                                            : "Task Submission"}
+                                    </h2>
+                                    <p className="text-gray-500 mt-1 text-sm">
+                                        Tasks for division:
+                                        <span className="font-bold text-[#D4DB95] uppercase ml-1">
+                                            {applicant.divisi_satu}
+                                        </span>
+                                        {applicant.divisi_dua && (
+                                            <span className="mx-1">&</span>
+                                        )}
+                                        <span className="font-bold text-[#D4DB95] uppercase">
+                                            {applicant.divisi_dua}
+                                        </span>
+                                    </p>
+                                </div>
+
+                                <form
+                                    onSubmit={submitTask}
+                                    className="p-8 space-y-8"
+                                >
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Task 1 */}
+                                        <div>
+                                            <label className={labelClass}>
+                                                Task for {applicant.divisi_satu}{" "}
+                                                <span className="text-red-400">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            {!isTaskFormClosed ? (
+                                                <div className="mt-1">
+                                                    <input
+                                                        type="file"
+                                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
+                                                        onChange={(e) =>
+                                                            setTaskData(
+                                                                "file_tugas_satu",
+                                                                e.target
+                                                                    .files[0],
+                                                            )
+                                                        }
+                                                        accept=".pdf,.zip,.rar,.docx,.doc"
+                                                        required
+                                                    />
+                                                    <p className="text-[10px] text-gray-400 mt-1">
+                                                        Max: 10MB (PDF, ZIP,
+                                                        RAR, DOCX).
+                                                    </p>
+                                                </div>
+                                            ) : isTaskSubmitted ? (
+                                                <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                                                    <span className="text-sm text-gray-600 font-medium">
+                                                        Task Submitted
+                                                    </span>
+                                                    <a
+                                                        href={`/storage/${applicant.path_tugas_satu}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs font-bold text-[#b8bf76] hover:underline"
+                                                    >
+                                                        View File
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                <div className="text-sm text-red-400 italic">
+                                                    Submission Closed
+                                                </div>
+                                            )}
+
+                                            {taskErrors.file_tugas_satu && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {taskErrors.file_tugas_satu}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Task 2 */}
+                                        <div>
+                                            <label className={labelClass}>
+                                                Task for {applicant.divisi_dua}{" "}
+                                                <span className="text-red-400">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            {!isTaskFormClosed ? (
+                                                <div className="mt-1">
+                                                    <input
+                                                        type="file"
+                                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
+                                                        onChange={(e) =>
+                                                            setTaskData(
+                                                                "file_tugas_dua",
+                                                                e.target
+                                                                    .files[0],
+                                                            )
+                                                        }
+                                                        accept=".pdf,.zip,.rar,.docx,.doc"
+                                                        required
+                                                    />
+                                                    <p className="text-[10px] text-gray-400 mt-1">
+                                                        Max: 10MB (PDF, ZIP,
+                                                        RAR, DOCX).
+                                                    </p>
+                                                </div>
+                                            ) : isTaskSubmitted ? (
+                                                applicant.path_tugas_dua ? (
+                                                    <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                                                        <span className="text-sm text-gray-600 font-medium">
+                                                            Task Submitted
+                                                        </span>
+                                                        <a
+                                                            href={`/storage/${applicant.path_tugas_dua}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-xs font-bold text-[#b8bf76] hover:underline"
+                                                        >
+                                                            View File
+                                                        </a>
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-sm text-gray-400 italic p-3 text-center bg-gray-50 rounded-lg">
+                                                        No 2nd task submitted
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <div className="text-sm text-red-400 italic">
+                                                    Submission Closed
+                                                </div>
+                                            )}
+
+                                            {taskErrors.file_tugas_dua && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {taskErrors.file_tugas_dua}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {!isTaskFormClosed && (
+                                        <div className="flex justify-end pt-2">
+                                            <button
+                                                type="submit"
+                                                disabled={processingTask}
+                                                className="w-full sm:w-auto px-8 py-3 bg-[#D4DB95] text-white font-bold rounded-lg shadow-lg shadow-[#D4DB95]/30 hover:bg-[#c0c785] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-wide text-xs"
+                                            >
+                                                {processingTask
+                                                    ? "Uploading..."
+                                                    : "Submit Tasks"}
+                                            </button>
+                                        </div>
+                                    )}
+                                </form>
+                            </div>
+                        </>
+                    )}
+
+                    {/* 4. FORM REGISTRASI (READ ONLY IF SUBMITTED) */}
+                    <div
+                        className={
+                            "bg-white shadow-xl shadow-gray-200/50 rounded-lg sm:rounded-2xl overflow-hidden"
+                        }
+                    >
                         {/* Header Form */}
                         <div className="px-8 pt-10 pb-6 text-center max-w-2xl mx-auto">
                             <h2 className="text-3xl font-black text-gray-800 tracking-tight">
-                                INTEL 2026 Member Recruitment
+                                {isSubmitted
+                                    ? "Your Application Data"
+                                    : "INTEL 2026 Member Recruitment"}
                             </h2>
                             <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-                                Please fill out the form below carefully. All
-                                fields marked with (*) are mandatory.
+                                {isSubmitted
+                                    ? "Below is the data you have submitted."
+                                    : "Please fill out the form below carefully. All fields marked with (*) are mandatory."}
                             </p>
                         </div>
 
                         <form
-                            onSubmit={submit}
+                            onSubmit={submitRegistration}
                             className="p-8 sm:p-10 space-y-10"
                         >
                             {/* --- DATA USER --- */}
@@ -402,8 +623,7 @@ export default function Dashboard({ auth, applicant }) {
                                 <div className="space-y-6">
                                     <div>
                                         <label className={labelClass}>
-                                            Why do you want to join INTEL?
-                                            (Reason and Motivation){" "}
+                                            Why do you want to join INTEL?{" "}
                                             <span className="text-red-400">
                                                 *
                                             </span>
@@ -481,123 +701,6 @@ export default function Dashboard({ auth, applicant }) {
                                                 </p>
                                             )}
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* --- TASK UPLOAD --- */}
-                            <div>
-                                <h3 className={sectionTitleClass}>
-                                    Task Submission
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Task 1 */}
-                                    <div>
-                                        <label className={labelClass}>
-                                            Task for 1st Division{" "}
-                                            <span className="text-red-400">
-                                                *
-                                            </span>
-                                        </label>
-                                        {!isFormClosed ? (
-                                            <div className="mt-1">
-                                                <input
-                                                    type="file"
-                                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            "file_tugas_satu",
-                                                            e.target.files[0],
-                                                        )
-                                                    }
-                                                    accept=".pdf,.zip,.rar,.docx"
-                                                    required
-                                                />
-                                                <p className="text-[10px] text-gray-400 mt-1">
-                                                    Max file size: 10MB (PDF,
-                                                    ZIP, RAR, DOCX).
-                                                </p>
-                                            </div>
-                                        ) : isSubmitted ? (
-                                            <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
-                                                <span className="text-sm text-gray-600 font-medium">
-                                                    Task 1 Submitted
-                                                </span>
-                                                <a
-                                                    href={`/storage/${applicant.path_tugas_satu}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-xs font-bold text-[#b8bf76] hover:underline"
-                                                >
-                                                    View File
-                                                </a>
-                                            </div>
-                                        ) : (
-                                            <div className="text-sm text-red-400 italic">
-                                                Submission closed.
-                                            </div>
-                                        )}
-                                        {errors.file_tugas_satu && (
-                                            <p className="text-red-500 text-xs mt-1">
-                                                {errors.file_tugas_satu}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    {/* Task 2 */}
-                                    <div>
-                                        <label className={labelClass}>
-                                            Task for 2nd Division
-                                        </label>
-                                        {!isFormClosed ? (
-                                            <div className="mt-1">
-                                                <input
-                                                    type="file"
-                                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            "file_tugas_dua",
-                                                            e.target.files[0],
-                                                        )
-                                                    }
-                                                    accept=".pdf,.zip,.rar,.docx"
-                                                    required
-                                                />
-                                                <p className="text-[10px] text-gray-400 mt-1">
-                                                    Max file size: 10MB (PDF,
-                                                    ZIP, RAR, DOCX).
-                                                </p>
-                                            </div>
-                                        ) : isSubmitted ? (
-                                            applicant.path_tugas_dua ? (
-                                                <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
-                                                    <span className="text-sm text-gray-600 font-medium">
-                                                        Task 2 Submitted
-                                                    </span>
-                                                    <a
-                                                        href={`/storage/${applicant.path_tugas_dua}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-xs font-bold text-[#b8bf76] hover:underline"
-                                                    >
-                                                        View File
-                                                    </a>
-                                                </div>
-                                            ) : (
-                                                <div className="text-sm text-gray-400 italic p-3 text-center bg-gray-50 rounded-lg">
-                                                    No 2nd task submitted
-                                                </div>
-                                            )
-                                        ) : (
-                                            <div className="text-sm text-red-400 italic">
-                                                Submission closed.
-                                            </div>
-                                        )}
-                                        {errors.file_tugas_dua && (
-                                            <p className="text-red-500 text-xs mt-1">
-                                                {errors.file_tugas_dua}
-                                            </p>
-                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -683,11 +786,16 @@ export default function Dashboard({ auth, applicant }) {
                                         </div>
                                     ))}
                                 </div>
+                                <p className="mt-10 text-gray-600 text-sm">
+                                    * By submitting this form, you confirm that
+                                    all information is accurate. You’ll be taken
+                                    to the task submission form next.
+                                </p>
                             </div>
 
                             {/* --- SUBMIT BUTTON --- */}
                             {!isFormClosed && (
-                                <div className="pt-4 flex justify-end">
+                                <div className=" flex justify-end">
                                     <button
                                         type="submit"
                                         disabled={processing}
