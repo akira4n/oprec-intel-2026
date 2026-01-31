@@ -20,7 +20,7 @@ export default function RegisterClosed() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#f0f7da] to-[#dce8b8] flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans">
-            <Head title="Pendaftaran Ditutup" />
+            <Head title="Registration Closed" />
 
             {/* --- EFEK SNOWFALL BINTANG --- */}
             <Snowfall
@@ -41,14 +41,14 @@ export default function RegisterClosed() {
             <div className="absolute top-[-10%] right-[-10%] w-64 h-64 md:w-96 md:h-96 bg-rose-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 pointer-events-none"></div>
 
             {/* Kartu Pesan Utama */}
-            <div className="relative z-10 w-full max-w-lg bg-white/90 backdrop-blur-sm rounded-[2.5rem] shadow-2xl p-8 sm:p-12 border border-white/50 text-center">
+            <div className="relative z-10 w-full max-w-lg bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 sm:p-12 border border-white/50 text-center">
                 
                 {/* Logo Section */}
                 <div className="flex justify-center mb-8">
                     <img
-                        src="/logo.jpg"
+                        src="/assets/images/logo.png"
                         alt="INTEL Logo"
-                        className="h-20 w-auto object-contain drop-shadow-sm"
+                        className="h-20 w-auto object-contain drop-shadow-sm rounded-md"
                         onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/150x80?text=INTEL+Logo';
@@ -66,11 +66,11 @@ export default function RegisterClosed() {
                 </div>
 
                 <h2 className={`text-3xl font-black uppercase tracking-tight mb-4 ${accentColorClass}`}>
-                    Pendaftaran Ditutup
+                    Registration Closed
                 </h2>
                 
                 <p className="text-gray-600 mb-8 leading-relaxed font-medium">
-                    Mohon maaf, periode pendaftaran <span className="font-bold">Open Recruitment INTEL 2026</span> telah berakhir pada tanggal 12 Februari.
+                    Thank you for your interest in joining us. Unfortunately, registration for INTEL 2026 Open Recruitment has ended as of February 12.
                 </p>
 
                 <div className="pt-4 border-t border-gray-100">
@@ -78,7 +78,7 @@ export default function RegisterClosed() {
                         href={route("login")}
                         className={`inline-block px-8 py-3 rounded-full border-2 border-[#d06b72] ${accentColorClass} font-bold hover:bg-[#d06b72] hover:text-white transition duration-300 shadow-md`}
                     >
-                        Kembali ke Login
+                        Back to Login
                     </Link>
                 </div>
             </div>

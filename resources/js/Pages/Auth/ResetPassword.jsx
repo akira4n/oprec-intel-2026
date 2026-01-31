@@ -61,14 +61,14 @@ export default function ResetPassword({ token, email }) {
             <div className="absolute top-[-10%] right-[-10%] w-64 h-64 md:w-96 md:h-96 bg-rose-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 pointer-events-none"></div>
 
             {/* Kartu Reset Password Utama */}
-            <div className="relative z-10 w-full max-w-md bg-white/90 backdrop-blur-sm rounded-[2.5rem] shadow-2xl p-8 sm:p-12 border border-white/50">
+            <div className="relative z-10 w-full max-w-md bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 sm:p-12 border border-white/50">
                 
                 {/* Logo Section */}
                 <div className="flex justify-center mb-6">
                     <img
                         src="/assets/images/logo.png"
                         alt="INTEL Logo"
-                        className="h-20 w-auto object-contain drop-shadow-sm"
+                        className="h-20 w-auto object-contain drop-shadow-sm rounded-md"
                         onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/150x80?text=INTEL+Logo';
