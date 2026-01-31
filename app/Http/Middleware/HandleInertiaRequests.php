@@ -40,6 +40,10 @@ class HandleInertiaRequests extends Middleware
                 'is_open' => now()->lessThan(\Carbon\Carbon::parse(config('app.oprec_deadline'))),
                 'deadline' => config('app.oprec_deadline'),
             ],
+            'task' => [
+                'is_open' => now()->lessThan(\Carbon\Carbon::parse(config('app.task_deadline'))),
+                'deadline' => config('app.task_deadline'),
+            ]
         ];
     }
 }

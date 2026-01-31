@@ -6,6 +6,7 @@ use App\Models\Applicant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ApplicantController extends Controller
@@ -41,14 +42,13 @@ class ApplicantController extends Controller
     public function store(Request $request)
     {
         if (now()->greaterThan(Carbon::parse(config('app.oprec_deadline')))) {
-            return redirect()->back()->withErrors(['msg' => 'Maaf waktu pengumpulan tugas sudah selesai.']);
+            return redirect()->back()->withErrors(['msg' => 'Maaf waktu pendaftaran sudah ditutup.']);
         }
 
         $user = Auth::user();
 
-        // cek sudah daftar atau belom
         if (Applicant::where('user_id', $user->id)->exists()) {
-            return redirect()->back()->withErrors(['msg' => 'Kamu sudah mendaftar, tidak bisa submit ulang.']);
+            return redirect()->back()->withErrors(['msg' => 'Kamu sudah mendaftar.']);
         }
 
         $validated = $request->validate([
@@ -59,8 +59,6 @@ class ApplicantController extends Controller
             'alasan_utama' => 'required|string|min:3|max:10000',
             'alasan_satu' => 'required|string|min:3|max:10000',
             'alasan_dua' => 'required|string|min:3|max:10000',
-            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:10240',
-            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar|max:10240',
 
             'file_tiktok' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'file_instagram' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -69,27 +67,8 @@ class ApplicantController extends Controller
         ]);
 
         if ($request->divisi_satu === $request->divisi_dua) {
-            return back()->withErrors([
-                'divisi_dua' => 'Division choices must be different.'
-            ]);
+            return back()->withErrors(['divisi_dua' => 'Division choices must be different.']);
         }
-
-        $cleanName = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $user->name));
-        $userNim = $user->nim;
-
-        $file1 = $request->file('file_tugas_satu');
-        $ext1 = $file1->getClientOriginalExtension();
-        $divisi1 = strtoupper($validated['divisi_satu']);
-
-        $filename1 = "{$cleanName}_{$userNim}_TUGAS1_{$divisi1}.{$ext1}";
-        $pathSatu = $file1->storeAs('tugas_oprec', $filename1, 'public');
-
-        $file2 = $request->file('file_tugas_dua');
-        $ext2 = $file2->getClientOriginalExtension();
-        $divisi2 = strtoupper($validated['divisi_dua']);
-
-        $filename2 = "{$cleanName}_{$userNim}_TUGAS2_{$divisi2}.{$ext2}";
-        $pathDua = $file2->storeAs('tugas_oprec', $filename2, 'public');
 
         $pathTiktok = $request->file('file_tiktok')->store('tugas_screenshoot', 'public');
         $pathInstagram = $request->file('file_instagram')->store('tugas_screenshoot', 'public');
@@ -100,23 +79,66 @@ class ApplicantController extends Controller
             'user_id' => $user->id,
             'major' => $validated['major'],
             'batch' => $validated['batch'],
-
             'divisi_satu' => $validated['divisi_satu'],
-            'divisi_dua' => $validated['divisi_dua'] ?? null,
+            'divisi_dua' => $validated['divisi_dua'],
             'alasan_utama' => $validated['alasan_utama'],
             'alasan_satu' => $validated['alasan_satu'],
-            'alasan_dua' => $validated['alasan_dua'] ?? null,
-            'path_tugas_satu' => $pathSatu,
-            'path_tugas_dua' => $pathDua,
-
+            'alasan_dua' => $validated['alasan_dua'],
             'path_tiktok' => $pathTiktok,
             'path_instagram' => $pathInstagram,
             'path_pamflet' => $pathPamflet,
             'path_twibbon' => $pathTwibbon,
 
+            'path_tugas_satu' => null,
+            'path_tugas_dua' => null,
+
             'status' => 'pending'
         ]);
 
-        return redirect()->route('dashboard')->with('message', 'Pendaftaran berhasil dikirim!');
+        return redirect()->route('dashboard')->with('message', 'Your registration data have been sent! Please continue uploading assignments.');
+    }
+
+    public function storeTasks(Request $request)
+    {
+        $user = Auth::user();
+        $applicant = Applicant::where('user_id', $user->id)->firstOrFail();
+
+        if (now()->greaterThan(Carbon::parse(config('app.task_deadline')))) {
+            return redirect()->back()->withErrors(['msg' => 'Maaf, batas waktu pengumpulan tugas sudah habis.']);
+        }
+
+        $request->validate([
+            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:10240',
+            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar|max:10240',
+        ]);
+
+        $cleanName = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $user->name));
+        $userNim = $user->nim;
+
+        if ($request->hasFile('file_tugas_satu')) {
+            $file1 = $request->file('file_tugas_satu');
+            $ext1 = $file1->getClientOriginalExtension();
+            $divisi1 = strtoupper($applicant->divisi_satu);
+
+            $filename1 = "{$cleanName}_{$userNim}_TUGAS1_{$divisi1}.{$ext1}";
+            $pathSatu = $file1->storeAs('tugas_oprec', $filename1, 'public');
+
+            $applicant->path_tugas_satu = $pathSatu;
+        }
+
+        if ($request->hasFile('file_tugas_dua')) {
+            $file2 = $request->file('file_tugas_dua');
+            $ext2 = $file2->getClientOriginalExtension();
+            $divisi2 = strtoupper($applicant->divisi_dua);
+
+            $filename2 = "{$cleanName}_{$userNim}_TUGAS2_{$divisi2}.{$ext2}";
+            $pathDua = $file2->storeAs('tugas_oprec', $filename2, 'public');
+
+            $applicant->path_tugas_dua = $pathDua;
+        }
+
+        $applicant->save();
+
+        return redirect()->route('dashboard')->with('message', 'Task has been sent! Good Luck.');
     }
 }
