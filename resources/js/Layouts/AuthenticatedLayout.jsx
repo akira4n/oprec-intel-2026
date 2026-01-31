@@ -5,21 +5,21 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function AuthenticatedLayout({ header, children }) {
+export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+        <div className="min-h-screen bg-gradient-to-b from-[#D4DB95]/70 to-[#FCD9BB]/70">
+            <nav className="max-w-7xl mx-auto fixed top-4 inset-x-4 z-50 rounded-lg border border-white/70 bg-white/60 shadow-lg backdrop-blur-md transition-all duration-300">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <a href={route("landing")}>
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <ApplicationLogo className="block h-9 w-auto fill-current rounded-sm" />
                                 </a>
                             </div>
 
@@ -29,6 +29,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                     active={route().current("dashboard")}
                                 >
                                     Dashboard
+                                </NavLink>
+                                <NavLink
+                                    href={route("pengumuman.index")}
+                                    active={route().current("pengumuman.index")}
+                                >
+                                    Announcement
                                 </NavLink>
                             </div>
                         </div>
@@ -40,7 +46,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                className="inline-flex items-center rounded-md border border-transparent bg-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-800 transition duration-150 ease-in-out hover:text-gray-600 focus:outline-none"
                                             >
                                                 {user.name}
 
@@ -85,7 +91,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-600 transition duration-150 ease-in-out hover:bg-white/50 focus:bg-white/50 focus:text-gray-800 focus:outline-none"
                             >
                                 <svg
                                     className="h-6 w-6"
@@ -124,7 +130,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div
                     className={
                         (showingNavigationDropdown ? "block" : "hidden") +
-                        " sm:hidden"
+                        " sm:hidden border-t border-gray-200/50"
                     }
                 >
                     <div className="space-y-1 pb-3 pt-2">
@@ -134,14 +140,20 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route("pengumuman.index")}
+                            active={route().current("pengumuman.index")}
+                        >
+                            Announcement
+                        </ResponsiveNavLink>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
+                    <div className="border-t border-gray-200/50 pb-1 pt-4">
                         <div className="px-4">
                             <div className="text-base font-medium text-gray-800">
                                 {user.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
+                            <div className="text-sm font-medium text-gray-600">
                                 {user.email}
                             </div>
                         </div>
@@ -162,15 +174,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
             </nav>
 
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
-            )}
-
-            <main>{children}</main>
+            <main className="pt-20 pb-10 px-4 sm:px-6 lg:px-8">{children}</main>
         </div>
     );
 }
