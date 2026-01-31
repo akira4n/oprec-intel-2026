@@ -54,8 +54,8 @@ class ApplicantController extends Controller
         $validated = $request->validate([
             'major' => 'required|in:si,sk,ti,ka,mi,tk',
             'batch' => 'required|in:2024,2025',
-            'divisi_satu' => 'required|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster',
-            'divisi_dua' => 'nullable|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster',
+            'divisi_satu' => 'required|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster,videography',
+            'divisi_dua' => 'nullable|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster,videography',
             'alasan_utama' => 'required|string|min:3|max:10000',
             'alasan_satu' => 'required|string|min:3|max:10000',
             'alasan_dua' => 'nullable|string|max:10000',

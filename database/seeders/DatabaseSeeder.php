@@ -24,15 +24,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Buat Admin per Divisi secara otomatis
-        $divisions = ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster'];
+        $divisions = ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster', 'videography'];
 
         foreach ($divisions as $index => $div) {
             User::create([
-                'name' => 'Admin '.strtoupper($div),
-                'email' => $div.'@intel.com',
-                'nim' => '111111111'.($index + 1), // NIM unik
+                'name' => 'Admin ' . strtoupper($div),
+                'email' => $div . '@intel.com',
+                'nim' => '111111111' . ($index + 1), // NIM unik
                 'role' => 'divisi_admin',
-                'no_hp' => '0812345678'.$index,
+                'no_hp' => '0812345678' . $index,
                 'division' => $div,
                 'password' => $password,
             ]);
