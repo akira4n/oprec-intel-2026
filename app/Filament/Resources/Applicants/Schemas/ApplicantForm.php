@@ -109,7 +109,7 @@ class ApplicantForm
                                 ->icon('heroicon-m-star')
                                 ->schema([
                                     TextInput::make('score_1')
-                                        ->label('Skor Teknis (0-100)')
+                                        ->label('Skor (0-100)')
                                         ->numeric()
                                         ->minValue(0)->maxValue(100)->suffix('Poin'),
                                     Textarea::make('notes_1')
@@ -123,7 +123,7 @@ class ApplicantForm
                                 ->visible(fn($record) => ! empty($record->divisi_dua))
                                 ->schema([
                                     TextInput::make('score_2')
-                                        ->label('Skor Teknis (0-100)')
+                                        ->label('Skor (0-100)')
                                         ->numeric()
                                         ->minValue(0)->maxValue(100)->suffix('Poin'),
                                     Textarea::make('notes_2')
