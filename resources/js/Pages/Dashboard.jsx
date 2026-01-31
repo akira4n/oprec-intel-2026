@@ -547,7 +547,7 @@ export default function Dashboard({ auth, applicant }) {
                                     {/* Task 2 */}
                                     <div>
                                         <label className={labelClass}>
-                                            Task for 2nd Division (Optional)
+                                            Task for 2nd Division
                                         </label>
                                         {!isFormClosed ? (
                                             <div className="mt-1">
@@ -561,6 +561,7 @@ export default function Dashboard({ auth, applicant }) {
                                                         )
                                                     }
                                                     accept=".pdf,.zip,.rar,.docx"
+                                                    required
                                                 />
                                                 <p className="text-[10px] text-gray-400 mt-1">
                                                     Max file size: 10MB (PDF,
