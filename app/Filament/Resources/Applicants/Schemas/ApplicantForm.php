@@ -31,7 +31,7 @@ class ApplicantForm
                                 ->schema([
                                     Placeholder::make('nama')
                                         ->label('Nama Lengkap')
-                                        ->content(fn ($record) => $record?->user->name ?? '-'),
+                                        ->content(fn($record) => $record?->user->name ?? '-'),
                                     Select::make('major')
                                         ->options(self::getMajors())
                                         ->label('Jurusan'),
@@ -82,18 +82,18 @@ class ApplicantForm
                             Section::make('File Tugas Pendaftaran')
                                 ->columns(2)
                                 ->schema([
-                                    Placeholder::make('path_tugas_satu')->label('Tugas Utama')
-                                        ->content(fn ($record) => self::downloadButton($record?->path_tugas_satu)),
-                                    Placeholder::make('path_tugas_dua')->label('Tugas Tambahan')
-                                        ->content(fn ($record) => self::downloadButton($record?->path_tugas_dua)),
+                                    Placeholder::make('path_tugas_satu')->label('Tugas Divisi 1')
+                                        ->content(fn($record) => self::downloadButton($record?->path_tugas_satu)),
+                                    Placeholder::make('path_tugas_dua')->label('Tugas Divisi 2')
+                                        ->content(fn($record) => self::downloadButton($record?->path_tugas_dua)),
                                 ]),
                             Section::make('Bukti Screenshot')
                                 ->columns(2)
                                 ->schema([
-                                    Placeholder::make('path_tiktok')->label('Bukti TikTok')->content(fn ($record) => self::imagePreview($record?->path_tiktok)),
-                                    Placeholder::make('path_instagram')->label('Bukti Instagram')->content(fn ($record) => self::imagePreview($record?->path_instagram)),
-                                    Placeholder::make('path_pamflet')->label('Bukti Pamflet')->content(fn ($record) => self::imagePreview($record?->path_pamflet)),
-                                    Placeholder::make('path_twibbon')->label('Bukti Twibbon')->content(fn ($record) => self::imagePreview($record?->path_twibbon)),
+                                    Placeholder::make('path_tiktok')->label('Bukti TikTok')->content(fn($record) => self::imagePreview($record?->path_tiktok)),
+                                    Placeholder::make('path_instagram')->label('Bukti Instagram')->content(fn($record) => self::imagePreview($record?->path_instagram)),
+                                    Placeholder::make('path_pamflet')->label('Bukti Pamflet')->content(fn($record) => self::imagePreview($record?->path_pamflet)),
+                                    Placeholder::make('path_twibbon')->label('Bukti Twibbon')->content(fn($record) => self::imagePreview($record?->path_twibbon)),
                                 ]),
                         ]),
 
@@ -104,7 +104,7 @@ class ApplicantForm
                         ->icon(Heroicon::OutlinedClipboardDocumentList)
                         // TIDAK ADA ->disabled() DISINI
                         ->schema([
-                            Section::make(fn ($record) => 'Penilaian Divisi 1: '.strtoupper($record->divisi_satu))
+                            Section::make(fn($record) => 'Penilaian Divisi 1: ' . strtoupper($record->divisi_satu))
                                 ->description('Isi penilaian untuk pilihan divisi prioritas utama.')
                                 ->icon('heroicon-m-star')
                                 ->schema([
@@ -117,10 +117,10 @@ class ApplicantForm
                                         ->rows(3),
                                 ])->columns(2),
 
-                            Section::make(fn ($record) => 'Penilaian Divisi 2: '.($record->divisi_dua ? strtoupper($record->divisi_dua) : '-'))
+                            Section::make(fn($record) => 'Penilaian Divisi 2: ' . ($record->divisi_dua ? strtoupper($record->divisi_dua) : '-'))
                                 ->icon('heroicon-m-arrow-path-rounded-square')
                                 ->collapsed()
-                                ->visible(fn ($record) => ! empty($record->divisi_dua))
+                                ->visible(fn($record) => ! empty($record->divisi_dua))
                                 ->schema([
                                     TextInput::make('score_2')
                                         ->label('Skor Teknis (0-100)')
@@ -177,7 +177,7 @@ class ApplicantForm
 
     protected static function getDivisions(): array
     {
-        return ['hrd' => 'HRD', 'pr' => 'Public Relation', 'mulmed' => 'Multimedia', 'arrait' => 'ARRAIT', 'scrabble' => 'Scrabble', 'newscasting' => 'Newscasting', 'debate' => 'Debate', 'toastmaster' => 'Toastmaster'];
+        return ['hrd' => 'HRD', 'pr' => 'Public Relation', 'mulmed' => 'Multimedia', 'arrait' => 'ARRAIT', 'scrabble' => 'Scrabble', 'newscasting' => 'Newscasting', 'debate' => 'Debate', 'toastmaster' => 'Toastmaster', 'videography' => 'Videopraphy'];
     }
 
     protected static function getMajors(): array

@@ -55,12 +55,12 @@ class ApplicantController extends Controller
             'major' => 'required|in:si,sk,ti,ka,mi,tk',
             'batch' => 'required|in:2024,2025',
             'divisi_satu' => 'required|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster,videography',
-            'divisi_dua' => 'nullable|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster,videography',
+            'divisi_dua' => 'required|in:hrd,pr,mulmed,arrait,scrabble,newscasting,debate,toastmaster,videography',
             'alasan_utama' => 'required|string|min:3|max:10000',
             'alasan_satu' => 'required|string|min:3|max:10000',
-            'alasan_dua' => 'nullable|string|max:10000',
+            'alasan_dua' => 'required|string|min:3|max:10000',
             'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:5120',
-            'file_tugas_dua' => 'nullable|file|mimes:pdf,zip,rar|max:5120',
+            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar|max:5120',
 
             'file_tiktok' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'file_instagram' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -74,17 +74,27 @@ class ApplicantController extends Controller
             ]);
         }
 
-        $pathSatu = $request->file('file_tugas_satu')->store('tugas_oprec', 'public');
+        $cleanName = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $user->name));
+        $userNim = $user->nim;
+
+        $file1 = $request->file('file_tugas_satu');
+        $ext1 = $file1->getClientOriginalExtension();
+        $divisi1 = strtoupper($validated['divisi_satu']);
+
+        $filename1 = "{$cleanName}_{$userNim}_TUGAS1_{$divisi1}.{$ext1}";
+        $pathSatu = $file1->storeAs('tugas_oprec', $filename1, 'public');
+
+        $file2 = $request->file('file_tugas_dua');
+        $ext2 = $file2->getClientOriginalExtension();
+        $divisi2 = strtoupper($validated['divisi_dua']);
+
+        $filename2 = "{$cleanName}_{$userNim}_TUGAS2_{$divisi2}.{$ext2}";
+        $pathDua = $file2->storeAs('tugas_oprec', $filename2, 'public');
 
         $pathTiktok = $request->file('file_tiktok')->store('tugas_screenshoot', 'public');
         $pathInstagram = $request->file('file_instagram')->store('tugas_screenshoot', 'public');
         $pathPamflet = $request->file('file_pamflet')->store('tugas_screenshoot', 'public');
         $pathTwibbon = $request->file('file_twibbon')->store('tugas_screenshoot', 'public');
-
-        $pathDua = null;
-        if ($request->hasFile('file_tugas_dua')) {
-            $pathDua = $request->file('file_tugas_dua')->store('tugas_oprec', 'public');
-        }
 
         Applicant::create([
             'user_id' => $user->id,
