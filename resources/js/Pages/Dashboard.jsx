@@ -7,24 +7,23 @@ export default function Dashboard({ auth, applicant }) {
 
     const isSubmitted = !!applicant;
     const isClosed = !oprec.is_open;
-
     const isFormClosed = isSubmitted || isClosed;
 
-    // List Divisi
-    const divisions = [
-        "hrd",
-        "pr",
-        "mulmed",
-        "arrait",
-        "scrabble",
-        "newscasting",
-        "debate",
-        "toastmaster",
+    // mapping divisi
+    const divisionOptions = [
+        { id: "hrd", label: "HRD" },
+        { id: "arrait", label: "ARRAIT" },
+        { id: "mulmed", label: "Multimedia" },
+        { id: "pr", label: "Public Relation" },
+        { id: "videography", label: "Videography" },
+        { id: "newscasting", label: "Newscasting" },
+        { id: "toastmaster", label: "Toastmaster" },
+        { id: "debate", label: "Debate" },
+        { id: "scrabble", label: "Scrabble" },
     ];
 
     const batches = ["2024", "2025"];
 
-    // list jurusan
     const majors = [
         { id: "si", name: "Information Systems" },
         { id: "sk", name: "Computer Systems" },
@@ -55,7 +54,7 @@ export default function Dashboard({ auth, applicant }) {
         post(route("applicant.store"));
     };
 
-    // --- KOMPONEN COUNTDOWN ---
+    // countdown
     const CountdownTimer = () => {
         const calculateTimeLeft = () => {
             const difference = +new Date(oprec.deadline) - +new Date();
@@ -63,10 +62,10 @@ export default function Dashboard({ auth, applicant }) {
 
             if (difference > 0) {
                 timeLeft = {
-                    Hari: Math.floor(difference / (1000 * 60 * 60 * 24)),
-                    Jam: Math.floor((difference / (1000 * 60 * 60)) % 24),
-                    Menit: Math.floor((difference / 1000 / 60) % 60),
-                    Detik: Math.floor((difference / 1000) % 60),
+                    d: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                    h: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                    m: Math.floor((difference / 1000 / 60) % 60),
+                    s: Math.floor((difference / 1000) % 60),
                 };
             }
             return timeLeft;
@@ -82,712 +81,620 @@ export default function Dashboard({ auth, applicant }) {
         }, []);
 
         const timerComponents = [];
-
         Object.keys(timeLeft).forEach((interval) => {
-            if (!timeLeft[interval] && timeLeft[interval] !== 0) {
-                return;
-            }
-
+            if (!timeLeft[interval] && timeLeft[interval] !== 0) return;
             timerComponents.push(
-                <div
+                <span
                     key={interval}
-                    className="flex flex-col items-center mx-2 bg-blue-100 p-2 rounded-lg min-w-[60px]"
+                    className="font-mono font-bold text-gray-700"
                 >
-                    <span className="font-bold text-xl text-blue-800">
-                        {timeLeft[interval]}
-                    </span>
-                    <span className="text-xs text-blue-600 uppercase">
+                    {timeLeft[interval]}
+                    <span className="text-[10px] text-gray-400 mr-1 uppercase">
                         {interval}
                     </span>
-                </div>,
+                </span>,
             );
         });
 
         return (
-            <div className="flex justify-center items-center py-6">
+            <div className="flex justify-center py-2 mb-4">
                 {timerComponents.length ? (
-                    <div className="flex flex-wrap justify-center items-center gap-2">
-                        <span className="font-bold text-gray-600 mr-2">
-                            Sisa Waktu Pendaftaran:
+                    <div className="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100 flex items-center gap-1 text-xs">
+                        <span className="text-gray-400 mr-1">
+                            Time Remaining:
                         </span>
                         {timerComponents}
                     </div>
                 ) : (
-                    <span className="text-red-600 font-bold text-lg">
-                        Waktu Pendaftaran Habis!
+                    <span className="text-red-500 font-bold text-xs bg-red-50 px-3 py-1 rounded-full">
+                        Registration Closed
                     </span>
                 )}
             </div>
         );
     };
 
-    const SubmissionInfo = () => {
-        return (
-            <div
-                className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-6 mb-8 rounded shadow-sm"
-                role="alert"
-            >
-                <div className="flex items-start">
-                    <div className="py-1">
-                        <svg
-                            className="fill-current h-8 w-8 text-blue-500 mr-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                        >
-                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p className="font-bold text-lg">
-                            Pendaftaran Berhasil Diterima! ✅
-                        </p>
-                        <p className="mt-2 text-md">
-                            Terima kasih telah mendaftar,{" "}
-                            <strong>{auth.user.name}</strong>. <br />
-                            Data dan berkas tugasmu sudah berhasil kami simpan
-                            di database.
-                        </p>
-                        <div className="mt-4 border-t border-blue-200 pt-3">
-                            <p className="font-semibold text-sm text-blue-800">
-                                📢 Apa selanjutnya?
-                            </p>
-                            <p className="text-sm mt-1">
-                                Proses seleksi berkas sedang berlangsung.
-                                Pengumuman tahap selanjutnya akan diinfokan
-                                secara serentak. Pastikan kamu memantau
-                                Instagram dan Grup WhatsApp Resmi Oprec INTEL.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    const SubmissionInfo = () => (
+        <div className="bg-green-50/50 border border-green-200 text-green-800 p-6 mb-8 rounded-xl shadow-sm flex items-start gap-4">
+            <div className="bg-green-100 p-2 rounded-full text-green-600">
+                <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                    />
+                </svg>
             </div>
-        );
-    };
-
-    const LateBanner = () => (
-        <div
-            className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 shadow-sm"
-            role="alert"
-        >
-            <p className="font-bold">⏳ Pendaftaran Sudah Ditutup</p>
-            <p>Maaf, kamu terlambat melakukan submit form pendaftaran.</p>
+            <div>
+                <h3 className="font-bold text-lg">Registration Received!</h3>
+                <p className="mt-1 text-sm text-green-700 leading-relaxed mb-2">
+                    Thank you, <strong>{auth.user.name}</strong>. Your
+                    registration data has been saved. Dont forget to join
+                    WhatsApp Group below for future information!
+                </p>
+                <a
+                    href="https://chat.whatsapp.com/C5rERVrt3joJkKug6HIupR"
+                    target="_blank"
+                    className="mt-1 text-sm text-sky-700 font-bold"
+                >
+                    [Join WhatsApp Group]
+                </a>
+            </div>
         </div>
     );
 
-    return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Dashboard Pendaftaran
-                </h2>
-            }
-        >
-            <Head title="Dashboard Oprec INTEL" />
+    const LateBanner = () => (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 mb-6 rounded-xl text-center shadow-sm">
+            <p className="font-bold">Registration Closed</p>
+            <p className="text-sm">
+                We are sorry, the submission period has ended.
+            </p>
+        </div>
+    );
 
-            <div className="py-12">
-                <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                    {/* countdown */}
+    // --- STYLE HELPERS (PRIMARY COLOR #D4DB95) ---
+    const inputClass =
+        "w-full border-gray-200 bg-gray-50/50 rounded-lg px-4 py-3 text-sm focus:bg-white focus:border-[#D4DB95] focus:ring-[#D4DB95] transition-all disabled:opacity-60 disabled:cursor-not-allowed";
+    const labelClass =
+        "block font-semibold text-xs text-gray-500 uppercase tracking-wider mb-2";
+    const sectionTitleClass =
+        "text-xl font-bold text-gray-800 border-l-4 border-[#D4DB95] pl-3 mb-6";
+
+    return (
+        <AuthenticatedLayout user={auth.user}>
+            <Head title="Registration Dashboard" />
+
+            <div className="pb-20 pt-8">
+                <div className="max-w-5xl mx-auto sm:px-6 lg:px-8">
                     {!isSubmitted && !isClosed && <CountdownTimer />}
 
-                    {/* tampilin banner jika sudah submit atau terlambat submit */}
+                    {/* Status Banners */}
                     {isSubmitted ? (
                         <SubmissionInfo />
                     ) : (
                         isClosed && <LateBanner />
                     )}
 
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8 border border-gray-100">
-                        <div className="mb-8 border-b pb-4">
-                            <h3 className="text-2xl font-bold text-gray-800">
-                                Formulir Pendaftaran
-                            </h3>
-                            <p className="text-sm text-gray-500 mt-1">
-                                Lengkapi data diri dan motivasimu dengan jujur.
+                    <div className="bg-white shadow-xl shadow-gray-200/50 rounded-lg sm:rounded-2xl overflow-hidden">
+                        {/* Header Form */}
+                        <div className="px-8 pt-10 pb-6 text-center max-w-2xl mx-auto">
+                            <h2 className="text-3xl font-black text-gray-800 tracking-tight">
+                                INTEL 2026 Member Recruitment
+                            </h2>
+                            <p className="text-gray-500 mt-2 text-sm leading-relaxed">
+                                Please fill out the form below carefully. All
+                                fields marked with (*) are mandatory.
                             </p>
-
-                            <div className="mt-4 flex gap-4 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                                <div>
-                                    <span className="font-bold block">
-                                        Nama:
-                                    </span>{" "}
-                                    {auth.user.name}
-                                </div>
-                                <div>
-                                    <span className="font-bold block">
-                                        NIM:
-                                    </span>{" "}
-                                    {auth.user.nim}
-                                </div>
-                                <div>
-                                    <span className="font-bold block">
-                                        Email:
-                                    </span>{" "}
-                                    {auth.user.email}
-                                </div>
-                                <div>
-                                    <span className="font-bold block">
-                                        No. HP:
-                                    </span>{" "}
-                                    {auth.user.no_hp}
-                                </div>
-                            </div>
                         </div>
 
-                        <form onSubmit={submit} className="space-y-8">
-                            {/* --- SECTION 0: DATA AKADEMIK (NEW) --- */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Jurusan (Major)
-                                    </label>
-                                    <select
-                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
-                                        value={data.major}
-                                        onChange={(e) =>
-                                            setData("major", e.target.value)
-                                        }
-                                        disabled={isFormClosed}
-                                        required
-                                    >
-                                        <option value="">Pilih Jurusan</option>
-                                        {majors.map((m) => (
-                                            <option key={m.id} value={m.id}>
-                                                {m.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.major && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.major}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Angkatan (Batch)
-                                    </label>
-                                    <select
-                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
-                                        value={data.batch}
-                                        onChange={(e) =>
-                                            setData("batch", e.target.value)
-                                        }
-                                        disabled={isFormClosed}
-                                        required
-                                    >
-                                        <option value="">Pilih Angkatan</option>
-                                        {batches.map((b) => (
-                                            <option key={b} value={b}>
-                                                {b}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.batch && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.batch}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="border-t border-gray-100"></div>
-
-                            {/* --- SECTION 1: PILIHAN DIVISI --- */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Pilihan Divisi 1 (Wajib)
-                                    </label>
-                                    <select
-                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
-                                        value={data.divisi_satu}
-                                        onChange={(e) =>
-                                            setData(
-                                                "divisi_satu",
-                                                e.target.value,
-                                            )
-                                        }
-                                        disabled={isFormClosed}
-                                        required
-                                    >
-                                        <option value="">Pilih Divisi</option>
-                                        {divisions.map((div) => (
-                                            <option key={div} value={div}>
-                                                {div.toUpperCase()}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.divisi_satu && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.divisi_satu}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Pilihan Divisi 2 (Opsional)
-                                    </label>
-                                    <select
-                                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-500"
-                                        value={data.divisi_dua}
-                                        onChange={(e) =>
-                                            setData(
-                                                "divisi_dua",
-                                                e.target.value,
-                                            )
-                                        }
-                                        disabled={isFormClosed}
-                                    >
-                                        <option value="">Tidak Memilih</option>
-                                        {divisions.map((div) => (
-                                            <option key={div} value={div}>
-                                                {div.toUpperCase()}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.divisi_dua && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.divisi_dua}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="border-t border-gray-100"></div>
-
-                            {/* --- SECTION 2: MOTIVASI --- */}
+                        <form
+                            onSubmit={submit}
+                            className="p-8 sm:p-10 space-y-10"
+                        >
+                            {/* --- DATA USER --- */}
                             <div>
-                                <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                    Alasan & Motivasi Masuk INTEL{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    className="w-full h-32 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-600"
-                                    value={data.alasan_utama}
-                                    onChange={(e) =>
-                                        setData("alasan_utama", e.target.value)
-                                    }
-                                    disabled={isFormClosed}
-                                    placeholder="Jelaskan motivasi terbesarmu bergabung dengan organisasi ini..."
-                                    required
-                                />
-                                {errors.alasan_utama && (
-                                    <div className="text-red-500 text-sm mt-1">
-                                        {errors.alasan_utama}
+                                <h3 className={sectionTitleClass}>
+                                    Student Information
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                                    <div>
+                                        <span className={labelClass}>
+                                            Full Name
+                                        </span>
+                                        <div className="font-medium text-gray-800">
+                                            {auth.user.name}
+                                        </div>
                                     </div>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Alasan Memilih Divisi 1
-                                    </label>
-                                    <textarea
-                                        className="w-full h-32 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-600"
-                                        value={data.alasan_satu}
-                                        onChange={(e) =>
-                                            setData(
-                                                "alasan_satu",
-                                                e.target.value,
-                                            )
-                                        }
-                                        disabled={isFormClosed}
-                                        required
-                                    />
-                                    {errors.alasan_satu && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.alasan_satu}
+                                    <div>
+                                        <span className={labelClass}>
+                                            NIM (Student ID)
+                                        </span>
+                                        <div className="font-medium text-gray-800">
+                                            {auth.user.nim}
                                         </div>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Alasan Memilih Divisi 2
-                                    </label>
-                                    <textarea
-                                        className="w-full h-32 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-600"
-                                        value={data.alasan_dua}
-                                        onChange={(e) =>
-                                            setData(
-                                                "alasan_dua",
-                                                e.target.value,
-                                            )
-                                        }
-                                        disabled={isFormClosed}
-                                        placeholder="Kosongkan jika tidak memilih divisi 2"
-                                    />
-                                    {errors.alasan_dua && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.alasan_dua}
+                                    </div>
+                                    <div>
+                                        <span className={labelClass}>
+                                            Email Address
+                                        </span>
+                                        <div className="font-medium text-gray-800">
+                                            {auth.user.email}
                                         </div>
-                                    )}
+                                    </div>
+                                    <div>
+                                        <span className={labelClass}>
+                                            Phone Number
+                                        </span>
+                                        <div className="font-medium text-gray-800">
+                                            {auth.user.no_hp}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="border-t border-gray-100"></div>
+                            {/* --- ACADEMIC DATA --- */}
+                            <div>
+                                <h3 className={sectionTitleClass}>
+                                    Academic Details
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className={labelClass}>
+                                            Major{" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        <select
+                                            className={inputClass}
+                                            value={data.major}
+                                            onChange={(e) =>
+                                                setData("major", e.target.value)
+                                            }
+                                            disabled={isFormClosed}
+                                            required
+                                        >
+                                            <option value="">
+                                                Select your Major
+                                            </option>
+                                            {majors.map((m) => (
+                                                <option key={m.id} value={m.id}>
+                                                    {m.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.major && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.major}
+                                            </p>
+                                        )}
+                                    </div>
 
-                            {/* --- SECTION 3: UPLOAD TUGAS --- */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {/* TUGAS DIVISI 1 */}
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        File Tugas Divisi 1 (PDF/ZIP)
-                                    </label>
+                                    <div>
+                                        <label className={labelClass}>
+                                            Batch{" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        <select
+                                            className={inputClass}
+                                            value={data.batch}
+                                            onChange={(e) =>
+                                                setData("batch", e.target.value)
+                                            }
+                                            disabled={isFormClosed}
+                                            required
+                                        >
+                                            <option value="">
+                                                Select Batch
+                                            </option>
+                                            {batches.map((b) => (
+                                                <option key={b} value={b}>
+                                                    {b}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.batch && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.batch}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
-                                    {!isFormClosed ? (
-                                        // 1. Mode Input (Masih Buka & Belum Submit)
-                                        <div className="mt-1">
-                                            <input
-                                                type="file"
-                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
+                            {/* --- DIVISION PREFERENCES --- */}
+                            <div>
+                                <h3 className={sectionTitleClass}>
+                                    Division Preferences
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className={labelClass}>
+                                            1st Division Choice{" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        <select
+                                            className={inputClass}
+                                            value={data.divisi_satu}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "divisi_satu",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={isFormClosed}
+                                            required
+                                        >
+                                            <option value="">
+                                                Select 1st Division
+                                            </option>
+                                            {divisionOptions.map((div) => (
+                                                <option
+                                                    key={div.id}
+                                                    value={div.id}
+                                                >
+                                                    {div.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.divisi_satu && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.divisi_satu}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className={labelClass}>
+                                            2nd Division Choice{" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        <select
+                                            className={inputClass}
+                                            value={data.divisi_dua}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "divisi_dua",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={isFormClosed}
+                                            required
+                                        >
+                                            <option value="">
+                                                Select 2nd Division
+                                            </option>
+                                            {divisionOptions.map((div) => (
+                                                <option
+                                                    key={div.id}
+                                                    value={div.id}
+                                                >
+                                                    {div.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.divisi_dua && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.divisi_dua}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* --- MOTIVATION --- */}
+                            <div>
+                                <h3 className={sectionTitleClass}>
+                                    Motivation
+                                </h3>
+                                <div className="space-y-6">
+                                    <div>
+                                        <label className={labelClass}>
+                                            Why do you want to join INTEL?
+                                            (Reason and Motivation){" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        <textarea
+                                            className={`${inputClass} min-h-[120px]`}
+                                            value={data.alasan_utama}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "alasan_utama",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={isFormClosed}
+                                            placeholder="Explain your biggest motivation..."
+                                            required
+                                        />
+                                        {errors.alasan_utama && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.alasan_utama}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={labelClass}>
+                                                Reason for 1st Division Choice{" "}
+                                                <span className="text-red-400">
+                                                    *
+                                                </span>
+                                            </label>
+                                            <textarea
+                                                className={`${inputClass} min-h-[100px]`}
+                                                value={data.alasan_satu}
                                                 onChange={(e) =>
                                                     setData(
-                                                        "file_tugas_satu",
-                                                        e.target.files[0],
+                                                        "alasan_satu",
+                                                        e.target.value,
                                                     )
                                                 }
-                                                accept=".pdf,.zip,.rar"
+                                                disabled={isFormClosed}
+                                                placeholder="Why this division?"
                                                 required
                                             />
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Maksimal 5MB.
-                                            </p>
+                                            {errors.alasan_satu && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {errors.alasan_satu}
+                                                </p>
+                                            )}
                                         </div>
-                                    ) : isSubmitted ? (
-                                        // 2. Mode Read Only (Sudah Submit -> Tampilkan Link)
-                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                            <div className="flex items-center text-sm text-gray-600">
-                                                <svg
-                                                    className="w-5 h-5 mr-2 text-red-500"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                                <span>
-                                                    File Tugas 1 Terkirim
+                                        <div>
+                                            <label className={labelClass}>
+                                                Reason for 2nd Division Choice{" "}
+                                                <span className="text-red-400">
+                                                    *
                                                 </span>
-                                            </div>
-                                            <a
-                                                href={`/storage/${applicant.path_tugas_satu}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm font-semibold text-indigo-600 hover:underline"
-                                            >
-                                                Lihat File
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        // 3. Mode Telat (Waktu Habis & Belum Submit -> Tampilkan Info)
-                                        <div className="mt-2 text-sm text-red-500 italic border border-red-200 bg-red-50 p-2 rounded">
-                                            Waktu pendaftaran habis. Tidak dapat
-                                            mengupload file.
-                                        </div>
-                                    )}
-                                    {errors.file_tugas_satu && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.file_tugas_satu}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* TUGAS DIVISI 2 */}
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        File Tugas Divisi 2 (PDF/ZIP)
-                                    </label>
-
-                                    {!isFormClosed ? (
-                                        // 1. Mode Input (Masih Buka & Belum Submit)
-                                        <div className="mt-1">
-                                            <input
-                                                type="file"
-                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
+                                            </label>
+                                            <textarea
+                                                className={`${inputClass} min-h-[100px]`}
+                                                value={data.alasan_dua}
                                                 onChange={(e) =>
                                                     setData(
-                                                        "file_tugas_dua",
-                                                        e.target.files[0],
+                                                        "alasan_dua",
+                                                        e.target.value,
                                                     )
                                                 }
-                                                accept=".pdf,.zip,.rar"
+                                                disabled={isFormClosed}
+                                                placeholder="Why this division?"
+                                                required
                                             />
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Maksimal 5MB.
-                                            </p>
+                                            {errors.alasan_dua && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {errors.alasan_dua}
+                                                </p>
+                                            )}
                                         </div>
-                                    ) : isSubmitted ? (
-                                        // 2. Mode Read Only (Sudah Submit)
-                                        // PERBAIKAN: Cek dulu apakah path_tugas_dua ada isinya?
-                                        applicant.path_tugas_dua ? (
-                                            <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                                <div className="flex items-center text-sm text-gray-600">
-                                                    <svg
-                                                        className="w-5 h-5 mr-2 text-red-500"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 20 20"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                    <span>
-                                                        File Tugas 2 Terkirim
-                                                    </span>
-                                                </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* --- TASK UPLOAD --- */}
+                            <div>
+                                <h3 className={sectionTitleClass}>
+                                    Task Submission
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Task 1 */}
+                                    <div>
+                                        <label className={labelClass}>
+                                            Task for 1st Division{" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        {!isFormClosed ? (
+                                            <div className="mt-1">
+                                                <input
+                                                    type="file"
+                                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "file_tugas_satu",
+                                                            e.target.files[0],
+                                                        )
+                                                    }
+                                                    accept=".pdf,.zip,.rar,.docx"
+                                                    required
+                                                />
+                                                <p className="text-[10px] text-gray-400 mt-1">
+                                                    Max file size: 10MB (PDF,
+                                                    ZIP, RAR, DOCX).
+                                                </p>
+                                            </div>
+                                        ) : isSubmitted ? (
+                                            <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                                                <span className="text-sm text-gray-600 font-medium">
+                                                    Task 1 Submitted
+                                                </span>
                                                 <a
-                                                    // PERBAIKAN: Ganti path_tugas_satu jadi path_tugas_dua
-                                                    href={`/storage/${applicant.path_tugas_dua}`}
+                                                    href={`/storage/${applicant.path_tugas_satu}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-sm font-semibold text-indigo-600 hover:underline"
+                                                    className="text-xs font-bold text-[#b8bf76] hover:underline"
                                                 >
-                                                    Lihat File
+                                                    View File
                                                 </a>
                                             </div>
                                         ) : (
-                                            // Jika path_tugas_dua kosong (null)
-                                            <div className="mt-6 text-sm text-gray-400 italic text-center">
-                                                - Tidak ada file tugas 2 -
+                                            <div className="text-sm text-red-400 italic">
+                                                Submission closed.
                                             </div>
-                                        )
-                                    ) : (
-                                        // 3. Mode Telat (Waktu Habis & Belum Submit)
-                                        <div className="mt-2 text-sm text-red-500 italic border border-red-200 bg-red-50 p-2 rounded">
-                                            Waktu pendaftaran habis. Tidak dapat
-                                            mengupload file.
-                                        </div>
-                                    )}
-                                    {errors.file_tugas_dua && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.file_tugas_dua}
-                                        </div>
-                                    )}
+                                        )}
+                                        {errors.file_tugas_satu && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.file_tugas_satu}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Task 2 */}
+                                    <div>
+                                        <label className={labelClass}>
+                                            Task for 2nd Division (Optional)
+                                        </label>
+                                        {!isFormClosed ? (
+                                            <div className="mt-1">
+                                                <input
+                                                    type="file"
+                                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "file_tugas_dua",
+                                                            e.target.files[0],
+                                                        )
+                                                    }
+                                                    accept=".pdf,.zip,.rar,.docx"
+                                                />
+                                                <p className="text-[10px] text-gray-400 mt-1">
+                                                    Max file size: 10MB (PDF,
+                                                    ZIP, RAR, DOCX).
+                                                </p>
+                                            </div>
+                                        ) : isSubmitted ? (
+                                            applicant.path_tugas_dua ? (
+                                                <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                                                    <span className="text-sm text-gray-600 font-medium">
+                                                        Task 2 Submitted
+                                                    </span>
+                                                    <a
+                                                        href={`/storage/${applicant.path_tugas_dua}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs font-bold text-[#b8bf76] hover:underline"
+                                                    >
+                                                        View File
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                <div className="text-sm text-gray-400 italic p-3 text-center bg-gray-50 rounded-lg">
+                                                    No 2nd task submitted
+                                                </div>
+                                            )
+                                        ) : (
+                                            <div className="text-sm text-red-400 italic">
+                                                Submission closed.
+                                            </div>
+                                        )}
+                                        {errors.file_tugas_dua && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.file_tugas_dua}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="border-t border-gray-100"></div>
-
-                            {/* --- SECTION 4: BUKTI UPLOAD (NEW) --- */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {/* 1. Tiktok */}
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Screenshot Follow Tiktok (Image)
-                                    </label>
-                                    {!isFormClosed ? (
-                                        <div className="mt-1">
-                                            <input
-                                                type="file"
-                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "file_tiktok",
-                                                        e.target.files[0],
-                                                    )
-                                                }
-                                                accept="image/*"
-                                                required
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Max 2MB.
-                                            </p>
+                            {/* --- PROOF UPLOAD --- */}
+                            <div>
+                                <h3 className={sectionTitleClass}>
+                                    Proof of Requirements
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {[
+                                        {
+                                            id: "file_tiktok",
+                                            label: "Tiktok Follow Proof",
+                                            path: applicant?.path_tiktok,
+                                        },
+                                        {
+                                            id: "file_instagram",
+                                            label: "Instagram Follow Proof",
+                                            path: applicant?.path_instagram,
+                                        },
+                                        {
+                                            id: "file_pamflet",
+                                            label: "Pamphlet Share Proof",
+                                            path: applicant?.path_pamflet,
+                                        },
+                                        {
+                                            id: "file_twibbon",
+                                            label: "Twibbon Upload Proof",
+                                            path: applicant?.path_twibbon,
+                                        },
+                                    ].map((field) => (
+                                        <div key={field.id}>
+                                            <label className={labelClass}>
+                                                {field.label}{" "}
+                                                <span className="text-red-400">
+                                                    *
+                                                </span>
+                                            </label>
+                                            {!isFormClosed ? (
+                                                <div className="mt-1">
+                                                    <input
+                                                        type="file"
+                                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-[#D4DB95] hover:file:text-white transition-all cursor-pointer border border-gray-300 rounded-lg"
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                field.id,
+                                                                e.target
+                                                                    .files[0],
+                                                            )
+                                                        }
+                                                        accept="image/*"
+                                                        required
+                                                    />
+                                                    <p className="text-[10px] text-gray-400 mt-1">
+                                                        Max: 5MB
+                                                    </p>
+                                                </div>
+                                            ) : isSubmitted ? (
+                                                <div className="mt-1 p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                                                    <span className="text-sm text-gray-600 font-medium">
+                                                        Uploaded
+                                                    </span>
+                                                    <a
+                                                        href={`/storage/${field.path}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs font-bold text-[#b8bf76] hover:underline"
+                                                    >
+                                                        View Image
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                <div className="text-sm text-red-400 italic">
+                                                    Closed
+                                                </div>
+                                            )}
+                                            {errors[field.id] && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {errors[field.id]}
+                                                </p>
+                                            )}
                                         </div>
-                                    ) : isSubmitted ? (
-                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">
-                                                Bukti Tiktok Terkirim
-                                            </span>
-                                            <a
-                                                href={`/storage/${applicant.path_tiktok}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm font-semibold text-indigo-600 hover:underline"
-                                            >
-                                                Lihat Gambar
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-2 text-sm text-red-500 italic">
-                                            Waktu habis.
-                                        </div>
-                                    )}
-                                    {errors.file_tiktok && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.file_tiktok}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* 2. Instagram */}
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Screenshot Follow Instagram (Image)
-                                    </label>
-                                    {!isFormClosed ? (
-                                        <div className="mt-1">
-                                            <input
-                                                type="file"
-                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "file_instagram",
-                                                        e.target.files[0],
-                                                    )
-                                                }
-                                                accept="image/*"
-                                                required
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Max 2MB.
-                                            </p>
-                                        </div>
-                                    ) : isSubmitted ? (
-                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">
-                                                Bukti IG Terkirim
-                                            </span>
-                                            <a
-                                                href={`/storage/${applicant.path_instagram}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm font-semibold text-indigo-600 hover:underline"
-                                            >
-                                                Lihat Gambar
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-2 text-sm text-red-500 italic">
-                                            Waktu habis.
-                                        </div>
-                                    )}
-                                    {errors.file_instagram && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.file_instagram}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* 3. Pamflet */}
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Screenshot Share Pamflet (Image)
-                                    </label>
-                                    {!isFormClosed ? (
-                                        <div className="mt-1">
-                                            <input
-                                                type="file"
-                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "file_pamflet",
-                                                        e.target.files[0],
-                                                    )
-                                                }
-                                                accept="image/*"
-                                                required
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Max 2MB.
-                                            </p>
-                                        </div>
-                                    ) : isSubmitted ? (
-                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">
-                                                Bukti Pamflet Terkirim
-                                            </span>
-                                            <a
-                                                href={`/storage/${applicant.path_pamflet}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm font-semibold text-indigo-600 hover:underline"
-                                            >
-                                                Lihat Gambar
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-2 text-sm text-red-500 italic">
-                                            Waktu habis.
-                                        </div>
-                                    )}
-                                    {errors.file_pamflet && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.file_pamflet}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* 4. Twibbon */}
-                                <div>
-                                    <label className="block font-semibold text-sm text-gray-700 mb-2">
-                                        Screenshot Share Twibbon (Image)
-                                    </label>
-                                    {!isFormClosed ? (
-                                        <div className="mt-1">
-                                            <input
-                                                type="file"
-                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer border border-gray-300 rounded-lg"
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "file_twibbon",
-                                                        e.target.files[0],
-                                                    )
-                                                }
-                                                accept="image/*"
-                                                required
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                Max 2MB.
-                                            </p>
-                                        </div>
-                                    ) : isSubmitted ? (
-                                        <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">
-                                                Bukti Twibbon Terkirim
-                                            </span>
-                                            <a
-                                                href={`/storage/${applicant.path_twibbon}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-sm font-semibold text-indigo-600 hover:underline"
-                                            >
-                                                Lihat Gambar
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-2 text-sm text-red-500 italic">
-                                            Waktu habis.
-                                        </div>
-                                    )}
-                                    {errors.file_twibbon && (
-                                        <div className="text-red-500 text-sm mt-1">
-                                            {errors.file_twibbon}
-                                        </div>
-                                    )}
+                                    ))}
                                 </div>
                             </div>
 
                             {/* --- SUBMIT BUTTON --- */}
                             {!isFormClosed && (
-                                <div className="flex justify-end pt-6">
+                                <div className="pt-4 flex justify-end">
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="inline-flex items-center px-8 py-3 bg-indigo-600 border border-transparent rounded-md font-bold text-sm text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 disabled:opacity-50 shadow-lg"
+                                        className="w-full sm:w-auto px-6 py-4 bg-[#D4DB95] text-white font-bold rounded-lg shadow-lg shadow-[#D4DB95]/30 hover:bg-[#c0c785] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none uppercase tracking-wide text-sm"
                                     >
                                         {processing
-                                            ? "Mengirim Data..."
-                                            : "Kirim Pendaftaran"}
+                                            ? "Sending Registration..."
+                                            : "Submit Application"}
                                     </button>
                                 </div>
                             )}
