@@ -59,13 +59,13 @@ class ApplicantController extends Controller
             'alasan_utama' => 'required|string|min:3|max:10000',
             'alasan_satu' => 'required|string|min:3|max:10000',
             'alasan_dua' => 'required|string|min:3|max:10000',
-            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:5120',
-            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar|max:5120',
+            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:10240',
+            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar|max:10240',
 
-            'file_tiktok' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'file_instagram' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'file_pamflet' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'file_twibbon' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'file_tiktok' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'file_instagram' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'file_pamflet' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'file_twibbon' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         if ($request->divisi_satu === $request->divisi_dua) {
