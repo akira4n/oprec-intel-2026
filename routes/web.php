@@ -20,6 +20,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ApplicantController::class, 'index'])->name('dashboard');
     Route::post('/applicant/store', [ApplicantController::class, 'store'])->name('applicant.store');
+    Route::post('/applicant/store-tasks', [ApplicantController::class, 'storeTasks'])->name('applicant.store_tasks');
 });
 
 Route::middleware('auth')->group(function () {

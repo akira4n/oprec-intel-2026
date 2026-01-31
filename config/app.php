@@ -124,5 +124,6 @@ return [
     ],
 
     'oprec_deadline' => env('OPREC_DEADLINE', '2026-02-12 23:59:59'),
+    'task_deadline' => env('TASK_DEADLINE', '2026-02-15 23:59:59'),
 
 ];

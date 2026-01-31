@@ -17,12 +17,12 @@ return new class extends Migration
             $table->enum('major', ['si', 'sk', 'ti', 'ka', 'mi', 'tk']);
             $table->enum('batch', ['2024', '2025']);
             $table->enum('divisi_satu', ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster', 'videography']);
-            $table->enum('divisi_dua', ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster', 'videography'])->nullable();
+            $table->enum('divisi_dua', ['hrd', 'pr', 'mulmed', 'arrait', 'scrabble', 'newscasting', 'debate', 'toastmaster', 'videography']);
             $table->text('alasan_utama');
-            $table->text('alasan_satu');
+            $table->text('alasan_satu')->nullable();
             $table->text('alasan_dua')->nullable();
 
-            $table->string('path_tugas_satu');
+            $table->string('path_tugas_satu')->nullable();
             $table->string('path_tugas_dua')->nullable();
 
             $table->string('path_tiktok');
