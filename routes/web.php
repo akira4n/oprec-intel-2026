@@ -3,7 +3,6 @@
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -13,6 +12,10 @@ Route::get('/', function () {
     ]);
 })->name('landing');
 
+Route::get('/teslanding', function () {
+    return view('landingpage');
+    // 'recruitment' ini harus sama persis dengan nama file blade kamu (tanpa .blade.php)
+});
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
@@ -34,4 +37,4 @@ Route::controller(PengumumanController::class)->group(function () {
     Route::post('/announcement', 'show')->name('pengumuman.check');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
