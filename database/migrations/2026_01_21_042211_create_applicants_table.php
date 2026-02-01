@@ -22,6 +22,10 @@ return new class extends Migration
             $table->text('alasan_satu')->nullable();
             $table->text('alasan_dua')->nullable();
 
+            $table->text('capaian');
+            $table->boolean('org_sebelum');
+            $table->boolean('komitmen_tanggungjawab');
+
             $table->string('path_tugas_satu')->nullable();
             $table->string('path_tugas_dua')->nullable();
 
