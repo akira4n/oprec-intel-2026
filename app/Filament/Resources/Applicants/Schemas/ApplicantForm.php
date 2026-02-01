@@ -22,7 +22,7 @@ class ApplicantForm
         return $schema->components([
             Tabs::make('Recruitment Detail')
                 ->tabs([
-                 
+
                     Tabs\Tab::make('Identitas & Motivasi')
                         ->icon(Heroicon::OutlinedUser)
                         ->disabled()
@@ -40,15 +40,14 @@ class ApplicantForm
                                         ->label('Angkatan'),
                                 ])->columns(3),
 
-                            Section::make('Motivasi & Komitmen') 
+                            Section::make('Motivasi & Komitmen')
                                 ->schema([
                                     Textarea::make('alasan_utama')
                                         ->label('Mengapa ingin bergabung dengan INTEL?')
                                         ->rows(3),
 
-                                
                                     Textarea::make('capaian')
-                                        ->label('Capaian Terbesar')
+                                        ->label('Apa yang ingin anda capai jika diterima di INTEL?')
                                         ->required()
                                         ->columnSpanFull()
                                         ->disabled(),
@@ -56,12 +55,12 @@ class ApplicantForm
                                     Grid::make(2)
                                         ->schema([
                                             Toggle::make('org_sebelum')
-                                                ->label('Pernah Organisasi?')
+                                                ->label('Pernah ber-organisasi sebelumnya?')
                                                 ->inline(false)
                                                 ->disabled(),
 
                                             Toggle::make('komitmen_tanggungjawab')
-                                                ->label('Siap Berkomitmen?')
+                                                ->label('Siap berkomitmen dengan tanggung jawab di INTEL?')
                                                 ->required()
                                                 ->inline(false)
                                                 ->disabled(),
@@ -69,12 +68,11 @@ class ApplicantForm
                                 ]),
                         ]),
 
-                  
                     Tabs\Tab::make('Pilihan Divisi')
                         ->icon(Heroicon::OutlinedRectangleGroup)
                         ->disabled()
                         ->schema([
-                            Section::make('Pilihan Utama')
+                            Section::make('Pilihan Pertama')
                                 ->schema([
                                     Select::make('divisi_satu')
                                         ->options(self::getDivisions())
@@ -83,7 +81,7 @@ class ApplicantForm
                                         ->label('Alasan memilih Divisi 1')
                                         ->rows(3),
                                 ])->columns(2),
-                            Section::make('Pilihan Cadangan')
+                            Section::make('Pilihan Kedua')
                                 ->schema([
                                     Select::make('divisi_dua')
                                         ->options(self::getDivisions())->label('Divisi Pilihan 2'),
@@ -92,7 +90,6 @@ class ApplicantForm
                                 ])->columns(2),
                         ]),
 
-                  
                     Tabs\Tab::make('Berkas & Tugas')
                         ->icon(Heroicon::OutlinedDocumentCheck)
                         ->disabled()
