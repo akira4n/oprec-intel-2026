@@ -6,8 +6,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn; // Tambahkan ini
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter; // Tambahkan ini untuk filter boolean
 use Filament\Tables\Table;
 
 class ApplicantsTable
@@ -34,17 +36,18 @@ class ApplicantsTable
                     ->badge()
                     ->color('info'),
 
-                TextColumn::make('divisi_dua')
-                    ->label('Pilihan 2')
-                    ->badge()
-                    ->color('info')
-                    ->placeholder('-'),
+                // Kolom Boolean Baru (Diletakkan sebelum status agar ringkas)
+                IconColumn::make('org_sebelum')
+                    ->label('Org')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-badge')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->sortable(),
 
-                TextColumn::make('created_at')
-                    ->label('Tanggal Daftar')
-                    ->dateTime('d M Y, H:i')
-                    ->sortable()
-                    ->toggleable(),
+                IconColumn::make('komitmen_tanggungjawab')
+                    ->label('Komit')
+                    ->boolean()
+                    ->sortable(),
 
                 TextColumn::make('status')
                     ->badge()
@@ -55,22 +58,26 @@ class ApplicantsTable
                         default => 'gray',
                     }),
 
-                TextColumn::make('accepted_division')
-                    ->label('Lulus Di')
-                    ->badge()
-                    ->color('success')
-                    ->formatStateUsing(fn (string $state) => strtoupper($state))
-                    ->placeholder('-'), // Kalau belum diterima, strip
-
-                // 2. Tampilkan Skor Utama
                 TextColumn::make('score_1')
-                    ->label('Skor Interview')
+                    ->label('Skor')
                     ->numeric()
                     ->sortable()
                     ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger'))
-                    ->placeholder('Belum Dinilai'),
+                    ->placeholder('-'),
+
+                // Kolom Capaian (Hidden by default karena teksnya panjang)
+                TextColumn::make('capaian')
+                    ->label('Capaian')
+                    ->limit(25)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('created_at')
+                    ->label('Tanggal Daftar')
+                    ->dateTime('d M Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('created_at', 'desc') // Urutkan dari yang terbaru
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')
                     ->options([
@@ -78,6 +85,14 @@ class ApplicantsTable
                         'terima' => 'Diterima',
                         'ditolak' => 'Ditolak',
                     ]),
+
+                // Filter Baru: Memudahkan admin cari yang berpengalaman
+                TernaryFilter::make('org_sebelum')
+                    ->label('Punya Pengalaman Organisasi'),
+
+                TernaryFilter::make('komitmen_tanggungjawab')
+                    ->label('Sudah Menyatakan Komitmen'),
+
                 SelectFilter::make('major')
                     ->options([
                         'si' => 'Sistem Informasi', 'sk' => 'Sistem Komputer', 'ti' => 'Teknik Informatika',
