@@ -55,6 +55,17 @@ export default function Dashboard({ auth, applicant }) {
         alasan_utama: applicant?.alasan_utama || "",
         alasan_satu: applicant?.alasan_satu || "",
         alasan_dua: applicant?.alasan_dua || "",
+
+        capaian: applicant?.capaian || "",
+        org_sebelum:
+            applicant?.org_sebelum !== undefined
+                ? String(applicant.org_sebelum)
+                : "",
+        komitmen_tanggungjawab:
+            applicant?.komitmen_tanggungjawab !== undefined
+                ? String(applicant.komitmen_tanggungjawab)
+                : "",
+
         file_tiktok: null,
         file_instagram: null,
         file_pamflet: null,
@@ -615,10 +626,10 @@ export default function Dashboard({ auth, applicant }) {
                                 </div>
                             </div>
 
-                            {/* --- MOTIVATION --- */}
+                            {/* --- MOTIVATION & COMMITMENT (UPDATED SECTION) --- */}
                             <div>
                                 <h3 className={sectionTitleClass}>
-                                    Motivation
+                                    Motivation & Commitment
                                 </h3>
                                 <div className="space-y-6">
                                     <div>
@@ -651,7 +662,8 @@ export default function Dashboard({ auth, applicant }) {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label className={labelClass}>
-                                                Reason for 1st Division Choice{" "}
+                                                Reason and why we should choose
+                                                you for 1st Division Choice{" "}
                                                 <span className="text-red-400">
                                                     *
                                                 </span>
@@ -666,7 +678,7 @@ export default function Dashboard({ auth, applicant }) {
                                                     )
                                                 }
                                                 disabled={isFormClosed}
-                                                placeholder="Why this division?"
+                                                placeholder="Why you choose this division? Why should we accept you?"
                                                 required
                                             />
                                             {errors.alasan_satu && (
@@ -677,7 +689,8 @@ export default function Dashboard({ auth, applicant }) {
                                         </div>
                                         <div>
                                             <label className={labelClass}>
-                                                Reason for 2nd Division Choice{" "}
+                                                Reason and why we should choose
+                                                you for 2nd Division Choice{" "}
                                                 <span className="text-red-400">
                                                     *
                                                 </span>
@@ -692,12 +705,173 @@ export default function Dashboard({ auth, applicant }) {
                                                     )
                                                 }
                                                 disabled={isFormClosed}
-                                                placeholder="Why this division?"
+                                                placeholder="Why you choose this division? Why should we accept you?"
                                                 required
                                             />
                                             {errors.alasan_dua && (
                                                 <p className="text-red-500 text-xs mt-1">
                                                     {errors.alasan_dua}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* --- 1. CAPAIAN (FULL WIDTH) --- */}
+                                    <div>
+                                        <label className={labelClass}>
+                                            What do you hope to achieve by being
+                                            part of INTEL?{" "}
+                                            <span className="text-red-400">
+                                                *
+                                            </span>
+                                        </label>
+                                        <textarea
+                                            className={`${inputClass} min-h-[120px]`}
+                                            value={data.capaian}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "capaian",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={isFormClosed}
+                                            placeholder="Your goals and expectations..."
+                                            required
+                                        />
+                                        {errors.capaian && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors.capaian}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* --- ADDITIONAL QUESTIONS --- */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Organisasi Sebelumnya */}
+                                        <div>
+                                            <label className={labelClass}>
+                                                Have you ever been part of
+                                                organization before?{" "}
+                                                <span className="text-red-400">
+                                                    *
+                                                </span>
+                                            </label>
+                                            <div className="flex gap-4 mt-3">
+                                                <label className="inline-flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="org_sebelum"
+                                                        value="1"
+                                                        checked={
+                                                            data.org_sebelum ===
+                                                            "1"
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                "org_sebelum",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        disabled={isFormClosed}
+                                                        className="text-[#D4DB95] focus:ring-[#D4DB95] w-5 h-5"
+                                                        required
+                                                    />
+                                                    <span className="ml-2 text-sm text-gray-700 font-medium">
+                                                        Yes
+                                                    </span>
+                                                </label>
+                                                <label className="inline-flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="org_sebelum"
+                                                        value="0"
+                                                        checked={
+                                                            data.org_sebelum ===
+                                                            "0"
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                "org_sebelum",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        disabled={isFormClosed}
+                                                        className="text-[#D4DB95] focus:ring-[#D4DB95] w-5 h-5"
+                                                    />
+                                                    <span className="ml-2 text-sm text-gray-700 font-medium">
+                                                        No
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            {errors.org_sebelum && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {errors.org_sebelum}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Komitmen */}
+                                        <div>
+                                            <label className={labelClass}>
+                                                Are you willing to commit to the
+                                                responsibilities of being an
+                                                active member?{" "}
+                                                <span className="text-red-400">
+                                                    *
+                                                </span>
+                                            </label>
+                                            <div className="flex gap-4 mt-3">
+                                                <label className="inline-flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="komitmen_tanggungjawab"
+                                                        value="1"
+                                                        checked={
+                                                            data.komitmen_tanggungjawab ===
+                                                            "1"
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                "komitmen_tanggungjawab",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        disabled={isFormClosed}
+                                                        className="text-[#D4DB95] focus:ring-[#D4DB95] w-5 h-5"
+                                                        required
+                                                    />
+                                                    <span className="ml-2 text-sm text-gray-700 font-medium">
+                                                        Yes
+                                                    </span>
+                                                </label>
+                                                <label className="inline-flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="komitmen_tanggungjawab"
+                                                        value="0"
+                                                        checked={
+                                                            data.komitmen_tanggungjawab ===
+                                                            "0"
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                "komitmen_tanggungjawab",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        disabled={isFormClosed}
+                                                        className="text-[#D4DB95] focus:ring-[#D4DB95] w-5 h-5"
+                                                    />
+                                                    <span className="ml-2 text-sm text-gray-700 font-medium">
+                                                        No
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            {errors.komitmen_tanggungjawab && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {
+                                                        errors.komitmen_tanggungjawab
+                                                    }
                                                 </p>
                                             )}
                                         </div>
