@@ -6,6 +6,8 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle; // Tambahkan ini
+use Filament\Schemas\Components\Grid; // Namespace v5 untuk Grid
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
@@ -20,18 +22,16 @@ class ApplicantForm
         return $schema->components([
             Tabs::make('Recruitment Detail')
                 ->tabs([
-                    // =================================================
-                    // TAB 1: IDENTITAS (DIKUNCI / READ ONLY)
-                    // =================================================
+
                     Tabs\Tab::make('Identitas & Motivasi')
                         ->icon(Heroicon::OutlinedUser)
-                        ->disabled() // <--- INI KUNCINYA
+                        ->disabled()
                         ->schema([
                             Section::make('Data Mahasiswa')
                                 ->schema([
                                     Placeholder::make('nama')
                                         ->label('Nama Lengkap')
-                                        ->content(fn($record) => $record?->user->name ?? '-'),
+                                        ->content(fn ($record) => $record?->user->name ?? '-'),
                                     Select::make('major')
                                         ->options(self::getMajors())
                                         ->label('Jurusan'),
@@ -39,22 +39,40 @@ class ApplicantForm
                                         ->options(['2024' => '2024', '2025' => '2025', '2026' => '2026'])
                                         ->label('Angkatan'),
                                 ])->columns(3),
-                            Section::make('Motivasi Bergabung')
+
+                            Section::make('Motivasi & Komitmen')
                                 ->schema([
                                     Textarea::make('alasan_utama')
                                         ->label('Mengapa ingin bergabung dengan INTEL?')
-                                        ->rows(4),
+                                        ->rows(3),
+
+                                    Textarea::make('capaian')
+                                        ->label('Apa yang ingin anda capai jika diterima di INTEL?')
+                                        ->required()
+                                        ->columnSpanFull()
+                                        ->disabled(),
+
+                                    Grid::make(2)
+                                        ->schema([
+                                            Toggle::make('org_sebelum')
+                                                ->label('Pernah ber-organisasi sebelumnya?')
+                                                ->inline(false)
+                                                ->disabled(),
+
+                                            Toggle::make('komitmen_tanggungjawab')
+                                                ->label('Siap berkomitmen dengan tanggung jawab di INTEL?')
+                                                ->required()
+                                                ->inline(false)
+                                                ->disabled(),
+                                        ]),
                                 ]),
                         ]),
 
-                    // =================================================
-                    // TAB 2: PILIHAN DIVISI (DIKUNCI / READ ONLY)
-                    // =================================================
                     Tabs\Tab::make('Pilihan Divisi')
                         ->icon(Heroicon::OutlinedRectangleGroup)
-                        ->disabled() // <--- INI KUNCINYA
+                        ->disabled()
                         ->schema([
-                            Section::make('Pilihan Utama')
+                            Section::make('Pilihan Pertama')
                                 ->schema([
                                     Select::make('divisi_satu')
                                         ->options(self::getDivisions())
@@ -63,7 +81,7 @@ class ApplicantForm
                                         ->label('Alasan memilih Divisi 1')
                                         ->rows(3),
                                 ])->columns(2),
-                            Section::make('Pilihan Cadangan')
+                            Section::make('Pilihan Kedua')
                                 ->schema([
                                     Select::make('divisi_dua')
                                         ->options(self::getDivisions())->label('Divisi Pilihan 2'),
@@ -72,39 +90,32 @@ class ApplicantForm
                                 ])->columns(2),
                         ]),
 
-                    // =================================================
-                    // TAB 3: BERKAS (DIKUNCI / READ ONLY)
-                    // =================================================
                     Tabs\Tab::make('Berkas & Tugas')
                         ->icon(Heroicon::OutlinedDocumentCheck)
-                        ->disabled() // <--- INI KUNCINYA (Tombol download tetap bisa diklik)
+                        ->disabled()
                         ->schema([
                             Section::make('File Tugas Pendaftaran')
                                 ->columns(2)
                                 ->schema([
                                     Placeholder::make('path_tugas_satu')->label('Tugas Divisi 1')
-                                        ->content(fn($record) => self::downloadButton($record?->path_tugas_satu)),
+                                        ->content(fn ($record) => self::downloadButton($record?->path_tugas_satu)),
                                     Placeholder::make('path_tugas_dua')->label('Tugas Divisi 2')
-                                        ->content(fn($record) => self::downloadButton($record?->path_tugas_dua)),
+                                        ->content(fn ($record) => self::downloadButton($record?->path_tugas_dua)),
                                 ]),
                             Section::make('Bukti Screenshot')
                                 ->columns(2)
                                 ->schema([
-                                    Placeholder::make('path_tiktok')->label('Bukti TikTok')->content(fn($record) => self::imagePreview($record?->path_tiktok)),
-                                    Placeholder::make('path_instagram')->label('Bukti Instagram')->content(fn($record) => self::imagePreview($record?->path_instagram)),
-                                    Placeholder::make('path_pamflet')->label('Bukti Pamflet')->content(fn($record) => self::imagePreview($record?->path_pamflet)),
-                                    Placeholder::make('path_twibbon')->label('Bukti Twibbon')->content(fn($record) => self::imagePreview($record?->path_twibbon)),
+                                    Placeholder::make('path_tiktok')->label('Bukti TikTok')->content(fn ($record) => self::imagePreview($record?->path_tiktok)),
+                                    Placeholder::make('path_instagram')->label('Bukti Instagram')->content(fn ($record) => self::imagePreview($record?->path_instagram)),
+                                    Placeholder::make('path_pamflet')->label('Bukti Pamflet')->content(fn ($record) => self::imagePreview($record?->path_pamflet)),
+                                    Placeholder::make('path_twibbon')->label('Bukti Twibbon')->content(fn ($record) => self::imagePreview($record?->path_twibbon)),
                                 ]),
                         ]),
 
-                    // =================================================
-                    // TAB 4: EVALUASI (TETAP BISA DIEDIT ADMIN)
-                    // =================================================
                     Tabs\Tab::make('Evaluasi Interview')
                         ->icon(Heroicon::OutlinedClipboardDocumentList)
-                        // TIDAK ADA ->disabled() DISINI
                         ->schema([
-                            Section::make(fn($record) => 'Penilaian Divisi 1: ' . strtoupper($record->divisi_satu))
+                            Section::make(fn ($record) => 'Penilaian Divisi 1: '.strtoupper($record->divisi_satu))
                                 ->description('Isi penilaian untuk pilihan divisi prioritas utama.')
                                 ->icon('heroicon-m-star')
                                 ->schema([
@@ -117,10 +128,10 @@ class ApplicantForm
                                         ->rows(3),
                                 ])->columns(2),
 
-                            Section::make(fn($record) => 'Penilaian Divisi 2: ' . ($record->divisi_dua ? strtoupper($record->divisi_dua) : '-'))
+                            Section::make(fn ($record) => 'Penilaian Divisi 2: '.($record->divisi_dua ? strtoupper($record->divisi_dua) : '-'))
                                 ->icon('heroicon-m-arrow-path-rounded-square')
                                 ->collapsed()
-                                ->visible(fn($record) => ! empty($record->divisi_dua))
+                                ->visible(fn ($record) => ! empty($record->divisi_dua))
                                 ->schema([
                                     TextInput::make('score_2')
                                         ->label('Skor (0-100)')
@@ -132,12 +143,8 @@ class ApplicantForm
                                 ])->columns(2),
                         ]),
 
-                    // =================================================
-                    // TAB 5: KEPUTUSAN (TETAP BISA DIEDIT ADMIN)
-                    // =================================================
                     Tabs\Tab::make('Keputusan Akhir')
                         ->icon(Heroicon::OutlinedCheckBadge)
-                        // TIDAK ADA ->disabled() DISINI
                         ->schema([
                             Section::make('Hasil Seleksi')
                                 ->schema([
@@ -153,8 +160,6 @@ class ApplicantForm
         ]);
     }
 
-    // ... (Fungsi helper downloadButton, imagePreview, dll TETAP SAMA seperti sebelumnya) ...
-    // Pastikan copy-paste fungsi helper di bawah ini juga ya kalau belum ada
     protected static function downloadButton($path)
     {
         if (! $path) {
@@ -177,7 +182,7 @@ class ApplicantForm
 
     protected static function getDivisions(): array
     {
-        return ['hrd' => 'HRD', 'pr' => 'Public Relation', 'mulmed' => 'Multimedia', 'arrait' => 'ARRAIT', 'scrabble' => 'Scrabble', 'newscasting' => 'Newscasting', 'debate' => 'Debate', 'toastmaster' => 'Toastmaster', 'videography' => 'Videopraphy'];
+        return ['hrd' => 'HRD', 'pr' => 'Public Relation', 'mulmed' => 'Multimedia', 'arrait' => 'ARRAIT', 'scrabble' => 'Scrabble', 'newscasting' => 'Newscasting', 'debate' => 'Debate', 'toastmaster' => 'Toastmaster', 'videography' => 'Videography'];
     }
 
     protected static function getMajors(): array
