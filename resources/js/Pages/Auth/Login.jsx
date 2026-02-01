@@ -103,6 +103,7 @@ export default function Login({ status, canResetPassword }) {
                             isFocused={true}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="your@email.com"
+                            required
                         />
                         <InputError message={errors.email} className="mt-2" />
                     </div>
@@ -121,6 +122,7 @@ export default function Login({ status, canResetPassword }) {
                             autoComplete="current-password"
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="••••••••"
+                            required
                         />
                         <InputError message={errors.password} className="mt-2" />
                     </div>
