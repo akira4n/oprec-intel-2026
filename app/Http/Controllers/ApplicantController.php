@@ -60,6 +60,10 @@ class ApplicantController extends Controller
             'alasan_satu' => 'required|string|min:3|max:10000',
             'alasan_dua' => 'required|string|min:3|max:10000',
 
+            'capaian' => 'required|string|min:3|max:10000',
+            'org_sebelum' => 'required|boolean',
+            'komitmen_tanggungjawab' => 'required|boolean',
+
             'file_tiktok' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'file_instagram' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'file_pamflet' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -84,6 +88,11 @@ class ApplicantController extends Controller
             'alasan_utama' => $validated['alasan_utama'],
             'alasan_satu' => $validated['alasan_satu'],
             'alasan_dua' => $validated['alasan_dua'],
+
+            'capaian' => $validated['capaian'],
+            'org_sebelum' => $validated['org_sebelum'],
+            'komitmen_tanggungjawab' => $validated['komitmen_tanggungjawab'],
+
             'path_tiktok' => $pathTiktok,
             'path_instagram' => $pathInstagram,
             'path_pamflet' => $pathPamflet,
