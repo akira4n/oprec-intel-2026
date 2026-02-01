@@ -19,6 +19,9 @@ class Applicant extends Model
         'alasan_utama',
         'alasan_satu',
         'alasan_dua',
+        'capaian',
+        'org_sebelum',
+        'komitmen_tanggungjawab',
         'path_tugas_satu',
         'path_tugas_dua',
         'path_tiktok',
@@ -26,10 +29,10 @@ class Applicant extends Model
         'path_pamflet',
         'path_twibbon',
         'status',
-        'accepted_division', // <--- Pastikan ada
-        'score_1',           // <--- Pastikan ada
-        'notes_1',           // <--- Pastikan ada
-        'score_2',           // <--- Pastikan ada
+        'accepted_division',
+        'score_1',
+        'notes_1',
+        'score_2',
         'notes_2',
     ];
 
