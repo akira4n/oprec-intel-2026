@@ -22,9 +22,7 @@ class ApplicantForm
         return $schema->components([
             Tabs::make('Recruitment Detail')
                 ->tabs([
-                    // =================================================
-                    // TAB 1: IDENTITAS (DIKUNCI / READ ONLY)
-                    // =================================================
+                 
                     Tabs\Tab::make('Identitas & Motivasi')
                         ->icon(Heroicon::OutlinedUser)
                         ->disabled()
@@ -42,13 +40,13 @@ class ApplicantForm
                                         ->label('Angkatan'),
                                 ])->columns(3),
 
-                            Section::make('Motivasi & Komitmen') // Saya update judulnya dikit biar pas
+                            Section::make('Motivasi & Komitmen') 
                                 ->schema([
                                     Textarea::make('alasan_utama')
                                         ->label('Mengapa ingin bergabung dengan INTEL?')
                                         ->rows(3),
 
-                                    // FIELD BARU MASUK DISINI
+                                
                                     Textarea::make('capaian')
                                         ->label('Capaian Terbesar')
                                         ->required()
@@ -71,9 +69,7 @@ class ApplicantForm
                                 ]),
                         ]),
 
-                    // =================================================
-                    // TAB 2: PILIHAN DIVISI (DIKUNCI / READ ONLY)
-                    // =================================================
+                  
                     Tabs\Tab::make('Pilihan Divisi')
                         ->icon(Heroicon::OutlinedRectangleGroup)
                         ->disabled()
@@ -96,8 +92,7 @@ class ApplicantForm
                                 ])->columns(2),
                         ]),
 
-                    // ... (TAB 3, 4, 5 tetap sama seperti kode kamu sebelumnya) ...
-
+                  
                     Tabs\Tab::make('Berkas & Tugas')
                         ->icon(Heroicon::OutlinedDocumentCheck)
                         ->disabled()
@@ -168,7 +163,6 @@ class ApplicantForm
         ]);
     }
 
-    // --- Helper Functions ---
     protected static function downloadButton($path)
     {
         if (! $path) {

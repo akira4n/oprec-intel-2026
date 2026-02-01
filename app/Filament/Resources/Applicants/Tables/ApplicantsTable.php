@@ -6,10 +6,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn; // Tambahkan ini
+use Filament\Tables\Columns\IconColumn; 
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter; // Tambahkan ini untuk filter boolean
+use Filament\Tables\Filters\TernaryFilter; 
 use Filament\Tables\Table;
 
 class ApplicantsTable
@@ -36,7 +36,6 @@ class ApplicantsTable
                     ->badge()
                     ->color('info'),
 
-                // Kolom Boolean Baru (Diletakkan sebelum status agar ringkas)
                 IconColumn::make('org_sebelum')
                     ->label('Org')
                     ->boolean()
@@ -65,7 +64,6 @@ class ApplicantsTable
                     ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger'))
                     ->placeholder('-'),
 
-                // Kolom Capaian (Hidden by default karena teksnya panjang)
                 TextColumn::make('capaian')
                     ->label('Capaian')
                     ->limit(25)
@@ -86,7 +84,7 @@ class ApplicantsTable
                         'ditolak' => 'Ditolak',
                     ]),
 
-                // Filter Baru: Memudahkan admin cari yang berpengalaman
+               
                 TernaryFilter::make('org_sebelum')
                     ->label('Punya Pengalaman Organisasi'),
 
