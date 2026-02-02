@@ -10,25 +10,21 @@ Route::get('/', function () {
     return view('landing', [
         'deadline' => config('app.oprec_deadline'),
     ]);
-})->name('landing');
+})->middleware('throttle:40,1')->name('landing');
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'throttle:40,1'])->group(function () {
     Route::get('/dashboard', [ApplicantController::class, 'index'])->name('dashboard');
     Route::post('/applicant/store', [ApplicantController::class, 'store'])->name('applicant.store');
     Route::post('/applicant/store-tasks', [ApplicantController::class, 'storeTasks'])->name('applicant.store_tasks');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'throttle:40,1'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::controller(PengumumanController::class)->group(function () {
+Route::controller(PengumumanController::class)->middleware('throttle:40,1')->group(function () {
     Route::get('/announcement', 'index')->name('pengumuman.index');
     Route::post('/announcement', 'show')->name('pengumuman.check');
 });
