@@ -176,24 +176,60 @@
 
     <div class="pt-24 bg-bgGreen" id="home">
         <div class="flex flex-col md:flex-row gap-6 mx-auto max-w-7xl px-4 py-2">
-
-            <div class="w-full md:w-3/4 order-2 md:order-1 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h2 class="text-2xl font-bold mb-4">Konten Utama (75%)</h2>
-                <p class="text-gray-600">
-                    Bagian ini lebarnya 75%. Di layar desktop posisinya di KIRI.
-                    Tapi kalau di layar HP, dia akan turun ke BAWAH karena kita set <code>order-2</code>.
-                </p>
+            <div class="w-full max-w-7xl mx-auto px-4 py-10 relative">
+                <div class="absolute top-0 left-4 md:top-6 md:left-10 z-20">
+                    <svg class="w-14 h-14 md:w-18 md:h-18 text-[#F1B2BA] fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </div>
+                <div class="absolute bottom-0 right-4 md:bottom-10 md:right-20 z-20">
+                    <svg class="w-12 h-12 md:w-16 md:h-16 text-[#F1B2BA] fill-current transform rotate-12"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </div>
+                <div class="absolute top-20 right-0 md:top-10 md:right-1/4 z-20 opacity-80">
+                    <svg class="w-10 h-10 md:w-12 md:h-12 text-[#F1B2BA] fill-current -rotate-12" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-center relative z-0">
+                    <div
+                        class="w-full md:w-3/4 order-2 md:order-1 bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 z-10 -mt-12 md:mt-0 text-center md:text-left">
+                        <h1>
+                            <span class="text-[#D07270] font-bold text-2xl">Open Recruitment</span>
+                            <span
+                                class="bg-gradient-to-r font-bold text-2xl from-[#383838] to-[#FB8A07] bg-clip-text text-transparent">INTEL
+                                2026</span>
+                        </h1>
+                        <h2 class="text-[#D07270] font-bold text-3xl mt-2">Enrolling the Next INTEL Generation:</h2>
+                        <h3
+                            class="my-4 inline-block bg-gradient-to-r from-[#D07270] via-[#BADD7F] to-[#FCD9BB] bg-clip-text text-transparent text-4xl md:text-5xl font-bold">
+                            Speak Up, Stand Out!
+                        </h3>
+                        <p class="text-[#DD7373] text-lg leading-relaxed">
+                            INTEL (Ilkom’s Community of English Lovers) is a community for FASILKOM UNSRI students to
+                            develop their English proficiency and Information Technology skills, empowering them to
+                            compete in the global arena.
+                        </p>
+                    </div>
+                    <div
+                        class="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 order-1 md:order-2 bg-[#D07270] p-4 shadow-lg border-4 border-white h-fit rounded-full z-20 md:-ml-16 relative -translate-y-7 md:translate-y-0">
+                        <img src="assets/images/logo.png" alt="Logo INTEL"
+                            class="w-full h-full object-cover rounded-full bg-white">
+                    </div>
+                </div>
+                <div class="md:px-24 flex items-center justify-center md:justify-start gap-3 mt-4">
+                    <a href="{{ route('login') }}"
+                        class="font-semibold text-white rounded-3xl py-3 px-6 bg-[#D07270] hover:bg-[#9c5655] transition cursor-pointer">Join
+                        Us!</a>
+                    <a href="https://drive.google.com/drive/folders/1A0g6RA5hlylg-qB1h_Jv0hj794hpfyrX?usp=drive_link"
+                        class="text-white border-white border py-3 px-6 rounded-3xl font-semibold">Guidebook</a>
+                </div>
             </div>
-
-            <div
-                class="w-full md:w-1/4 order-1 md:order-2 bg-[#FFFAD0] p-6 rounded-xl shadow-sm border border-[#D4DB95] h-fit">
-                <h3 class="text-lg font-bold text-[#6A3A39] mb-2">Info (25%)</h3>
-                <p class="text-sm text-gray-700">
-                    Bagian ini lebarnya 25%. Di layar HP, dia akan naik ke ATAS (urutan pertama)
-                    karena kita set <code>order-1</code>.
-                </p>
-            </div>
-
         </div>
         <div id="countdown-container" class="py-8 flex flex-col items-center animate-fade-in-up">
             <p class="text-gray-500 mb-2 text-[10px] uppercase tracking-[0.2em] font-semibold">
@@ -737,15 +773,26 @@
         </div>
     </section>
 
-    <div class="max-w-full max-w7xl mt-16 py-26 px-4 flex flex-col gap-8 items-center justify-center">
-        <div
-            className="absolute -top-20 -left-20 w-96 h-96 bg-[#BADD7F] rounded-full blur-[100px] opacity-60 pointer-events-none z-10">
-        </div>
+    <div
+        class="max-w-full max-w7xl mt-16 py-26 px-4 flex flex-col gap-8 items-center justify-center overflow-x-hidden">
         <p
             class="text-3xl md:text-4xl font-semibold text-center bg-gradient-to-r from-[#BADD7F] to to-[#647744] bg-clip-text text-transparent">
             IF YOU JOIN
             INTEL, YOU WILL GET:
         </p>
+        <div class="relative">
+            <div class="absolute top-0 -left-56  transform -z-10">
+                <div
+                    class="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full shadow-[0_0_80px_30px_rgba(241,178,186,0.8)]">
+                </div>
+            </div>
+
+            <div class="absolute top-32 -right-56 md:-right-80 transform -z-10">
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 bg-white rounded-full shadow-[0_0_80px_30px_rgba(186,221,127,0.8)]">
+                </div>
+            </div>
+        </div>
         <div>
             <p
                 class="text-center text-8xl md:text-9xl tracking-tight font-bold bg-gradient-to-r from-[#6F8746] via-[#F1B2BA] to-[#FFFAD0] bg-clip-text text-transparent">
