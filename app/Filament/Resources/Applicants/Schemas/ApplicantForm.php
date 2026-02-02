@@ -32,12 +32,21 @@ class ApplicantForm
                                     Placeholder::make('nama')
                                         ->label('Nama Lengkap')
                                         ->content(fn ($record) => $record?->user->name ?? '-'),
+                                    Placeholder::make('nim')
+                                        ->label('NIM')
+                                        ->content(fn ($record) => $record?->user->nim ?? '-'),
                                     Select::make('major')
                                         ->options(self::getMajors())
                                         ->label('Jurusan'),
                                     Select::make('batch')
                                         ->options(['2024' => '2024', '2025' => '2025', '2026' => '2026'])
                                         ->label('Angkatan'),
+                                    Placeholder::make('no_hp')
+                                        ->label('Nomor HP')
+                                        ->content(fn ($record) => $record?->user->no_hp ?? '-'),
+                                    Placeholder::make('email')
+                                        ->label('Email')
+                                        ->content(fn ($record) => $record?->user->email ?? '-'),
                                 ])->columns(3),
 
                             Section::make('Motivasi & Komitmen')
@@ -78,7 +87,7 @@ class ApplicantForm
                                         ->options(self::getDivisions())
                                         ->label('Divisi Pilihan 1'),
                                     Textarea::make('alasan_satu')
-                                        ->label('Alasan memilih Divisi 1')
+                                        ->label('Alasan memilih Divisi 1 dan kenapa kami harus menerima')
                                         ->rows(3),
                                 ])->columns(2),
                             Section::make('Pilihan Kedua')
@@ -86,7 +95,7 @@ class ApplicantForm
                                     Select::make('divisi_dua')
                                         ->options(self::getDivisions())->label('Divisi Pilihan 2'),
                                     Textarea::make('alasan_dua')
-                                        ->label('Alasan memilih Divisi 2')->rows(3),
+                                        ->label('Alasan memilih Divisi 2 dan kenapa kami harus menerima')->rows(3),
                                 ])->columns(2),
                         ]),
 
