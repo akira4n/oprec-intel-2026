@@ -6,6 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open Recruitment INTEL FASILKOM UNSRI 2026</title>
 
+    <meta name="description"
+        content="Join INTEL (Ilkom’s Community of English Lovers) FASILKOM UNSRI. Enhance your English proficiency and organizational skills. Registration is open now!">
+    <meta name="keywords"
+        content="INTEL UNSRI, Open Recruitment, Fasilkom Organization, English Club Unsri, Unsri Students, Organization Recruitment, Intel Fasilkom, English Community">
+    <meta name="author" content="INTEL FASILKOM UNSRI">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="Open Recruitment INTEL FASILKOM UNSRI 2026">
+    <meta property="og:description"
+        content="Ready to grow? Join INTEL now and become part of the largest English community at Fasilkom UNSRI.">
+    <meta property="og:image" content="{{ asset('assets/images/logo.png') }}">
+
     @vite(['resources/js/app.jsx'])
 
     <style>
@@ -219,7 +233,7 @@
                     <a href="{{ route('login') }}"
                         class="font-semibold text-white rounded-3xl py-3 px-6 bg-[#D07270] hover:bg-[#9c5655] transition cursor-pointer">Join
                         Us!</a>
-                    <a href="https://drive.google.com/drive/folders/1ysZBy0CUWaLToUOE-KaRCT-XPZAy6WAR?usp=sharing"
+                    <a href="https://drive.google.com/drive/folders/1A0g6RA5hlylg-qB1h_Jv0hj794hpfyrX?usp=drive_link"
                         target="_blank"
                         class="text-white border-white border py-3 px-6 rounded-3xl font-semibold">Guidebook</a>
                 </div>
