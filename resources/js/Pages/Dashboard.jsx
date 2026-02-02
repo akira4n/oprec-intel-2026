@@ -261,6 +261,13 @@ export default function Dashboard({ auth, applicant }) {
                                             {applicant.divisi_dua}
                                         </span>
                                     </p>
+                                    <a
+                                        href=""
+                                        target="_blank"
+                                        className="mt-6 text-blue-800 text-sm font-bold"
+                                    >
+                                        [ View Submission ]
+                                    </a>
                                 </div>
 
                                 <form
@@ -965,6 +972,13 @@ export default function Dashboard({ auth, applicant }) {
                                     all information is accurate. You’ll be taken
                                     to the task submission form next.
                                 </p>
+                                <a
+                                    href=""
+                                    target="_blank"
+                                    className="mt-6 text-blue-800 font-bold"
+                                >
+                                    [ View Submission ]
+                                </a>
                             </div>
 
                             {/* --- SUBMIT BUTTON --- */}

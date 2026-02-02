@@ -227,6 +227,7 @@
                         class="font-semibold text-white rounded-3xl py-3 px-6 bg-[#D07270] hover:bg-[#9c5655] transition cursor-pointer">Join
                         Us!</a>
                     <a href="https://drive.google.com/drive/folders/1A0g6RA5hlylg-qB1h_Jv0hj794hpfyrX?usp=drive_link"
+                        target="_blank"
                         class="text-white border-white border py-3 px-6 rounded-3xl font-semibold">Guidebook</a>
                 </div>
             </div>
