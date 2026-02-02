@@ -99,15 +99,8 @@
             <div class="max-w-7xl mx-auto px-6 py-4">
 
                 <div class="flex justify-between items-center">
-                    <h1 class="font-bold text-xl md:text-3xl">
-                        <span class="bg-gradient-to-r from-[#D07270] to-[#6A3A39] text-transparent bg-clip-text">
-                            INTEL
-                        </span>
-                        <span class="bg-gradient-to-r from-white to-[#FFFAD0] text-transparent bg-clip-text">
-                            UNSRI
-                        </span>
-                    </h1>
-
+                    <a href="#home"><img src="assets\images\long_logo.png" alt="Logo Intel"
+                            class="h-10 md:h-12 w-auto object-contain"></a>
                     <ul class="hidden md:flex gap-6 font-medium items-center justify-center">
                         <li class="font-semibold cursor-pointer hover:text-[#D07270] transition"><a
                                 href="#home">HOME</a></li>
@@ -226,7 +219,7 @@
                     <a href="{{ route('login') }}"
                         class="font-semibold text-white rounded-3xl py-3 px-6 bg-[#D07270] hover:bg-[#9c5655] transition cursor-pointer">Join
                         Us!</a>
-                    <a href="https://drive.google.com/drive/folders/1A0g6RA5hlylg-qB1h_Jv0hj794hpfyrX?usp=drive_link"
+                    <a href="https://drive.google.com/drive/folders/1ysZBy0CUWaLToUOE-KaRCT-XPZAy6WAR?usp=sharing"
                         target="_blank"
                         class="text-white border-white border py-3 px-6 rounded-3xl font-semibold">Guidebook</a>
                 </div>
@@ -630,7 +623,8 @@
                     class="font-bold text-gray-800 text-base md:text-lg italic leading-relaxed px-4 md:px-12 bg-white/60 backdrop-blur-sm py-6 rounded-3xl shadow-sm">
                     "The Autonomous Body of Ilkom’s Community of English Lovers (BO INTEL), established in 2008, is an
                     organization within the Faculty of Computer Science that focuses on the field of English
-                    linguistics... <span class="text-[#D07270]">#IntelCanDoIt</span>."
+                    linguistics... <span class="text-[#D07270]">
+                        #OurHomeWhereWeGrowWhatWeOwn</span>."
                 </p>
             </div>
         </div>
@@ -807,30 +801,30 @@
 
                 <div
                     class="bg-[#D4DB95] p-8 rounded-3xl md:rounded-none md:rounded-tr-[80px] md:rounded-bl-[80px] shadow-sm h-48 flex items-center justify-center">
-                    <p class="font-bold text-center text-[#38402B]"><span
-                            class="text-[#D07270] text-6xl">P</span>ositive <br>
-                        Environtment</p>
-                </div>
-
-                <div
-                    class="bg-[#FFE5E8]  p-8 rounded-3xl md:rounded-none md:rounded-tl-[80px] md:rounded-br-[80px] shadow-sm h-48 flex items-center justify-center">
-                    <p class="font-bold text-center text-[#D07270]"><span
-                            class="text-[#6F8746] text-6xl">A</span>ctive <br> English
+                    <p class="font-bold text-center text-[#38402B] text-xl">
+                        <span class="text-[#D07270] text-8xl">P</span>ositive <br> Environtment
                     </p>
                 </div>
 
                 <div
-                    class="bg-[#FFE5E8] order-last md:order-none p-8 rounded-3xl md:rounded-none md:rounded-tl-[80px] md:rounded-br-[80px] shadow-sm h-48 flex items-center justify-center">
-                    <p class="font-bold text-center text-[#D07270]"><span
-                            class="text-[#6F8746] text-6xl">T</span>alent <br> Development
+                    class="bg-[#FFE5E8] p-8 rounded-3xl md:rounded-none md:rounded-tl-[80px] md:rounded-br-[80px] shadow-sm h-48 flex items-center justify-center">
+                    <p class="font-bold text-center text-[#D07270] text-xl">
+                        <span class="text-[#6F8746] text-8xl">A</span>ctive <br> English
                     </p>
                 </div>
 
                 <div
-                    class="bg-[#D4DB95]  p-8 rounded-3xl md:rounded-none md:rounded-tr-[80px] md:rounded-bl-[80px] shadow-sm h-48 flex items-center justify-center">
-                    <p class="font-bold text-center text-[#38402B]"><span
-                            class="text-[#D07270] text-6xl">H</span>armony
-                        in<br>Teamwork</p>
+                    class="bg-[#D4DB95] md:bg-[#FFE5E8] p-8 rounded-3xl md:rounded-none md:rounded-tl-[80px] md:rounded-br-[80px] shadow-sm h-48 flex items-center justify-center">
+                    <p class="font-bold text-center text-xl text-[#38402B] md:text-[#D07270]">
+                        <span class="text-8xl text-[#D07270] md:text-[#6F8746]">T</span>alent <br> Development
+                    </p>
+                </div>
+
+                <div
+                    class="bg-[#FFE5E8] md:bg-[#D4DB95] p-8 rounded-3xl md:rounded-none md:rounded-tr-[80px] md:rounded-bl-[80px] shadow-sm h-48 flex items-center justify-center">
+                    <p class="font-bold text-center text-xl text-[#D07270] md:text-[#38402B]">
+                        <span class="text-8xl text-[#6F8746] md:text-[#D07270]">H</span>armony in<br>Teamwork
+                    </p>
                 </div>
 
             </div>
@@ -841,7 +835,6 @@
                     <img src="assets\images\logo.png" alt="Logo Center" class="w-full h-full object-cover" />
                 </div>
             </div>
-
         </div>
     </div>
 

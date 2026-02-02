@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import DeleteUserForm from "./Partials/DeleteUserForm";
+// import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
 
@@ -36,10 +36,9 @@ export default function Edit({ mustVerifyEmail, status }) {
                         <UpdatePasswordForm className="max-w-2xl" />
                     </div>
 
-                    {/* Delete Account Section */}
-                    <div className="bg-white p-8 sm:p-10 shadow-xl shadow-gray-200/50 sm:rounded-2xl border border-gray-100">
+                    {/* <div className="bg-white p-8 sm:p-10 shadow-xl shadow-gray-200/50 sm:rounded-2xl border border-gray-100">
                         <DeleteUserForm className="max-w-2xl" />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </AuthenticatedLayout>

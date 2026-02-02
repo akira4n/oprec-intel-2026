@@ -262,7 +262,7 @@ export default function Dashboard({ auth, applicant }) {
                                         </span>
                                     </p>
                                     <a
-                                        href=""
+                                        href="https://drive.google.com/drive/folders/1SsAoLGYjLq0-oaP68---KghiX4Bav9NC?usp=sharing"
                                         target="_blank"
                                         className="mt-6 text-blue-800 text-sm font-bold"
                                     >
@@ -967,18 +967,25 @@ export default function Dashboard({ auth, applicant }) {
                                         </div>
                                     ))}
                                 </div>
-                                <p className="mt-10 text-gray-600 text-sm">
+                                <a
+                                    href="https://drive.google.com/drive/folders/1SsAoLGYjLq0-oaP68---KghiX4Bav9NC?usp=sharing"
+                                    target="_blank"
+                                    className="block mt-8 text-blue-800 font-bold"
+                                >
+                                    [ View Submission ]
+                                </a>
+                                <a
+                                    href="https://drive.google.com/drive/folders/1UKk36L3ttylyAo0E7luStfLk9laOSX8E?usp=sharing"
+                                    target="_blank"
+                                    className="block mt-1 text-blue-800 font-bold"
+                                >
+                                    [ Download Twibbon Template ]
+                                </a>
+                                <p className="mt-5 text-gray-600 text-sm">
                                     * By submitting this form, you confirm that
                                     all information is accurate. You’ll be taken
                                     to the task submission form next.
                                 </p>
-                                <a
-                                    href=""
-                                    target="_blank"
-                                    className="mt-6 text-blue-800 font-bold"
-                                >
-                                    [ View Submission ]
-                                </a>
                             </div>
 
                             {/* --- SUBMIT BUTTON --- */}

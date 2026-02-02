@@ -176,7 +176,7 @@ export default function Login({ status, canResetPassword }) {
             </div>
 
             <div className="mt-8 text-xs font-bold text-gray-400/70 tracking-[0.2em] uppercase relative z-10">
-                #IntelCanDoIt • 2026
+                #OurHomeWhereWeGrowWhatWeOwn • 2026
             </div>
         </div>
     );

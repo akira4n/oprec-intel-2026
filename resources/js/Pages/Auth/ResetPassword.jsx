@@ -148,7 +148,7 @@ export default function ResetPassword({ token, email }) {
 
             {/* Footer Tagline */}
             <div className="mt-8 text-xs font-bold text-gray-400/70 tracking-[0.2em] uppercase relative z-10 text-center">
-                #IntelCanDoIt • 2026
+                #OurHomeWhereWeGrowWhatWeOwn • 2026
             </div>
         </div>
     );
