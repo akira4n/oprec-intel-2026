@@ -981,6 +981,13 @@ export default function Dashboard({ auth, applicant }) {
                                 >
                                     [ Download Twibbon Template ]
                                 </a>
+                                <a
+                                    href="https://drive.google.com/drive/folders/1NMtCyYxqcHXXJGy2JM-Z_q5DQuO2NAfi"
+                                    target="_blank"
+                                    className="block mt-1 text-blue-800 font-bold"
+                                >
+                                    [ Download Pamflet ]
+                                </a>
                                 <p className="mt-5 text-gray-600 text-sm">
                                     * By submitting this form, you confirm that
                                     all information is accurate. You’ll be taken

@@ -120,8 +120,8 @@ class ApplicantController extends Controller
         }
 
         $request->validate([
-            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar|max:10240',
-            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar|max:10240',
+            'file_tugas_satu' => 'required|file|mimes:pdf,zip,rar,doc,docx|max:10240',
+            'file_tugas_dua' => 'required|file|mimes:pdf,zip,rar,doc,docx|max:10240',
         ]);
 
         $cleanName = preg_replace('/[^A-Za-z0-9_]/', '', str_replace(' ', '_', $user->name));
