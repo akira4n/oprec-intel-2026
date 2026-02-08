@@ -184,7 +184,7 @@ export default function Dashboard({ auth, applicant }) {
                 <a
                     href="https://chat.whatsapp.com/C5rERVrt3joJkKug6HIupR"
                     target="_blank"
-                    className="mt-1 text-sm text-sky-700 font-bold"
+                    className="mt-1 text-blue-800 font-bold"
                 >
                     [Join WhatsApp Group]
                 </a>
@@ -335,9 +335,7 @@ export default function Dashboard({ auth, applicant }) {
                                         <div>
                                             <label className={labelClass}>
                                                 Task for {applicant.divisi_dua}{" "}
-                                                <span className="text-red-400">
-                                                    *
-                                                </span>
+                                                (Optional)
                                             </label>
 
                                             {!isTaskFormClosed ? (
@@ -353,7 +351,6 @@ export default function Dashboard({ auth, applicant }) {
                                                             )
                                                         }
                                                         accept=".pdf,.zip,.rar,.docx,.doc"
-                                                        required
                                                     />
                                                     <p className="text-[10px] text-gray-400 mt-1">
                                                         Max: 10MB (PDF, ZIP,
