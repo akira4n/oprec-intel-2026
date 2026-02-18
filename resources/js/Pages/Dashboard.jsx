@@ -19,8 +19,32 @@ export default function Dashboard({ auth, applicant }) {
     // Form Tugas jadi Read-Only jika Sudah Submit Tugas ATAU Deadline Tugas Lewat
     const isTaskFormClosed = isTaskSubmitted || isTaskClosed;
 
-    // Tampilkan Section Tugas
+    // --- LOGIC STATUS LOKASI ---
+    const isLocationSet = !!applicant?.interview_location;
+    // Muncul jika applicant ada TAPI lokasi belum dipilih
+    const needsLocation = applicant && !applicant.interview_location;
+
+    // --- LOGIC TAMPILAN SECTION TUGAS (DIUBAH SESUAI REQUEST) ---
+    // Task section selalu muncul selama user sudah submit pendaftaran
     const showTaskSection = isSubmitted;
+
+    // --- FORM KHUSUS: UPDATE LOKASI ---
+    const {
+        data: locData,
+        setData: setLocData,
+        post: postLoc,
+        processing: processingLoc,
+        errors: locErrors,
+    } = useForm({
+        interview_location: "",
+    });
+
+    const submitLocation = (e) => {
+        e.preventDefault();
+        postLoc(route("applicant.update_location"), {
+            preserveScroll: true,
+        });
+    };
 
     // --- DATA LIST ---
     const divisionOptions = [
@@ -230,7 +254,116 @@ export default function Dashboard({ auth, applicant }) {
                         isRegClosed && <LateBanner />
                     )}
 
-                    {/* 3. FORM ASSIGNMENT (Muncul Jika Sudah Regis) */}
+                    {/* --- 🔴 3. ALERT BOX: LOKASI WAWANCARA (Sekarang Dibawah Info Sukses) --- */}
+                    {/* Hanya muncul jika user SUDAH DAFTAR, tapi BELUM PILIH lokasi */}
+                    {isSubmitted && needsLocation && (
+                        <div className="mb-8 bg-yellow-50 border-b-4 border-yellow-400 p-6 rounded-lg shadow-md">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-yellow-100 rounded-full text-yellow-600 flex-shrink-0">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-6 w-6"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                            />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-800 uppercase tracking-wide">
+                                            Action Required: Interview Location
+                                        </h3>
+                                        <p className="text-sm text-gray-600">
+                                            Please confirm your interview
+                                            location preference immediately.
+                                            <br />
+                                            <span className="font-bold text-red-600 mt-1 block">
+                                                DEADLINE:{" "}
+                                                {new Date(
+                                                    oprec.deadline,
+                                                ).toLocaleString("en-EN", {
+                                                    dateStyle: "full",
+                                                    timeStyle: "short",
+                                                })}{" "}
+                                                UTC+7
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <form
+                                    onSubmit={submitLocation}
+                                    className="w-full md:w-auto flex flex-col sm:flex-row gap-3"
+                                >
+                                    <div className="relative w-full">
+                                        <select
+                                            value={locData.interview_location}
+                                            onChange={(e) =>
+                                                setLocData(
+                                                    "interview_location",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="block w-full md:w-48 py-2.5 px-4 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-sm font-medium text-gray-700"
+                                            required
+                                        >
+                                            <option value="" disabled>
+                                                Select Location...
+                                            </option>
+                                            <option value="Indralaya">
+                                                Indralaya
+                                            </option>
+                                            <option value="Palembang">
+                                                Palembang
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={processingLoc}
+                                        className="px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold rounded-lg shadow-sm transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-wider whitespace-nowrap"
+                                    >
+                                        {processingLoc
+                                            ? "Saving..."
+                                            : "Confirm"}
+                                    </button>
+                                </form>
+                            </div>
+                            {locErrors.interview_location && (
+                                <p className="text-red-500 text-sm mt-2 text-center md:text-right">
+                                    {locErrors.interview_location}
+                                </p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* --- 🟢 4. INFO SUKSES: JIKA SUDAH PILIH --- */}
+                    {isSubmitted && isLocationSet && (
+                        <div className="mb-6 bg-[#D4DB95]/20 border border-[#D4DB95] p-3 rounded-lg text-center shadow-sm">
+                            <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">
+                                Interview Location Confirmed:{" "}
+                                <span className="text-green-700">
+                                    {applicant.interview_location}
+                                </span>
+                            </p>
+                        </div>
+                    )}
+
+                    {/* 5. FORM ASSIGNMENT (Selalu Muncul Jika Sudah Daftar) */}
                     {showTaskSection && (
                         <>
                             {!isTaskSubmitted && !isTaskClosed && (
@@ -409,7 +542,7 @@ export default function Dashboard({ auth, applicant }) {
                         </>
                     )}
 
-                    {/* 4. FORM REGISTRASI (READ ONLY IF SUBMITTED) */}
+                    {/* 6. FORM REGISTRASI (READ ONLY IF SUBMITTED) */}
                     <div
                         className={
                             "bg-white shadow-xl shadow-gray-200/50 rounded-lg sm:rounded-2xl overflow-hidden"
@@ -988,7 +1121,8 @@ export default function Dashboard({ auth, applicant }) {
                                 <p className="mt-5 text-gray-600 text-sm">
                                     * By submitting this form, you confirm that
                                     all information is accurate. You’ll be taken
-                                    to the task submission form next.
+                                    to the interview location form the task
+                                    submission form.
                                 </p>
                             </div>
 

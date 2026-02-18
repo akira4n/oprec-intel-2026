@@ -70,7 +70,7 @@ export default function RegisterClosed() {
                 </h2>
                 
                 <p className="text-gray-600 mb-8 leading-relaxed font-medium">
-                    Thank you for your interest in joining us. Unfortunately, registration for INTEL 2026 Open Recruitment has ended as of February 12.
+                    Thank you for your interest in joining us. Unfortunately, registration for INTEL 2026 Open Recruitment has ended as of February 13.
                 </p>
 
                 <div className="pt-4 border-t border-gray-100">
