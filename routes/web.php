@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified', 'throttle:40,1'])->group(function () {
     Route::get('/dashboard', [ApplicantController::class, 'index'])->name('dashboard');
     Route::post('/applicant/store', [ApplicantController::class, 'store'])->name('applicant.store');
     Route::post('/applicant/store-tasks', [ApplicantController::class, 'storeTasks'])->name('applicant.store_tasks');
+    Route::post('/applicant/update-location', [ApplicantController::class, 'updateLocation'])->name('applicant.update_location');
 });
 
 Route::middleware(['auth', 'throttle:40,1'])->group(function () {
