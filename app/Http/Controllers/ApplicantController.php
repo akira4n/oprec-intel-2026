@@ -34,7 +34,8 @@ class ApplicantController extends Controller
             'path_instagram',
             'path_pamflet',
             'path_twibbon',
-            'created_at'
+            'created_at',
+            'interview_location'
         ])->first();
 
         return Inertia::render('Dashboard', [
@@ -152,5 +153,25 @@ class ApplicantController extends Controller
         $applicant->save();
 
         return redirect()->route('dashboard')->with('message', 'Task has been sent! Good Luck.');
+    }
+
+    public function updateLocation(Request $request)
+    {
+        if (now()->greaterThan(Carbon::parse(config('app.oprec_deadline')))) {
+            return redirect()->back()->withErrors(['msg' => 'Maaf, batas waktu pemilihan lokasi wawancara sudah ditutup.']);
+        }
+
+        $user = Auth::user();
+        $applicant = Applicant::where('user_id', $user->id)->firstOrFail();
+
+        $request->validate([
+            'interview_location' => 'required|in:Indralaya,Palembang',
+        ]);
+
+        $applicant->update([
+            'interview_location' => $request->interview_location
+        ]);
+
+        return redirect()->back()->with('message', 'Lokasi wawancara berhasil disimpan! Jangan lupa hadir tepat waktu.');
     }
 }
