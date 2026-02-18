@@ -29,6 +29,7 @@ class Applicant extends Model
         'path_pamflet',
         'path_twibbon',
         'status',
+        'interview_location',
         'accepted_division',
         'score_1',
         'notes_1',
