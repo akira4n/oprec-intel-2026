@@ -48,6 +48,12 @@ class ApplicantForm
                                         ->label('Email')
                                         ->content(fn ($record) => $record?->user->email ?? '-'),
                                 ])->columns(3),
+                            
+                            Section::make('Lokasi Wawancara')
+                                ->schema([
+                                    Placeholder::make('interview_location')
+                                        ->label('Lokasi Wawancara')
+                                ]),
 
                             Section::make('Motivasi & Komitmen')
                                 ->schema([
