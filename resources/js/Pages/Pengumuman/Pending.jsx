@@ -31,7 +31,7 @@ export default function Pending() {
                         announcement on
                     </p>
                     <p className="font-bold text-xl md:text-2xl">
-                        Feb 20, 2026 00:00 UTC+7
+                        Feb 20, 2026 21:00 UTC+7
                     </p>
                 </div>
             </div>

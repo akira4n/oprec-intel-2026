@@ -1,6 +1,10 @@
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowLeft,
+    faDownload,
+    faArrowRightFromBracket,
+    faArrowRightToBracket,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 export default function ResultCard({ data }) {
     const handleReset = () => {
@@ -74,18 +78,32 @@ export default function ResultCard({ data }) {
                             Assigned to the Division
                         </p>
                         <div
-                            className={`mb-6 inline-block text-xl md:text-2xl font-extrabold px-8 py-3 rounded-lg shadow-lg uppercase tracking-wider ${badgeStyle}`}
+                            className={`mb-8 inline-block text-xl md:text-2xl font-extrabold px-8 py-3 rounded-lg shadow-lg uppercase tracking-wider ${badgeStyle}`}
                         >
                             {data.accepted_division}
                         </div>
+
                         <a
-                            className={`inline-block text-sm md:text-base px-6 py-2 rounded-lg shadow-lg bg-[#25D366]`}
-                            href="https://whatsapp.com"
+                            className={`mb-4 inline-block text-sm md:text-base px-6 py-2 rounded-lg shadow-lg bg-sky-800 text-white hover:bg-transparent border-sky-800 border-2 hover:shadow-none hover:text-sky-800 transition-all duration-300 ease-in-out`}
+                            href="https://drive.google.com/drive/folders/1iXiNP3VEZ2o8inUtx2ND7vFi-vSR0oU4?usp=sharing"
                             target="_blank"
                         >
-                            <FontAwesomeIcon icon={faWhatsapp} /> Join WhatsApp
-                            Group
+                            <FontAwesomeIcon icon={faDownload} /> Download
+                            Commitment Letter
                         </a>
+
+                        <a
+                            className={`inline-block text-sm md:text-base px-8 py-4 rounded-lg shadow-lg text-white bg-[#25D366] hover:bg-transparent border-[#25D366] border-2 hover:shadow-none hover:text-[#25D366] transition-all duration-300 ease-in-out`}
+                            href="https://forms.gle/cpzegUZh2PzSwyHq6"
+                            target="_blank"
+                        >
+                            <FontAwesomeIcon icon={faArrowRightToBracket} />{" "}
+                            Submit Here
+                        </a>
+                        <p className="mt-8 text-sm">
+                            * Don't forget to submit your commitment letter and
+                            join the WhatsApp Group!{" "}
+                        </p>
                     </div>
                 )}
 
