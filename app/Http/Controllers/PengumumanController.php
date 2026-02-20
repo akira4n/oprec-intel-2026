@@ -12,7 +12,7 @@ class PengumumanController extends Controller
 {
     private function getAnnouncementDate()
     {
-        return Carbon::create(2026, 2, 20, 0, 0, 0, 'Asia/Jakarta');
+        return Carbon::create(2026, 2, 20, 21, 0, 0, 'Asia/Jakarta');
     }
 
     public function index()
